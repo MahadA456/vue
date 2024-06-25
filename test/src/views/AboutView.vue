@@ -60,7 +60,8 @@
     <el-form-item>
       <el-button type="primary" @click="onSubmit">Create</el-button>
       <el-button>Cancel</el-button>
-      <el-button type="success">Ok</el-button> <!-- New Ok Button -->
+      <el-button type="success" plain>Ok</el-button>
+<!-- New Ok Button -->
     </el-form-item>
   </el-form>
 </template>
