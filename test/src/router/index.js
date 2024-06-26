@@ -4,9 +4,25 @@ import LoginPage from '../views/LoginPage.vue';
 import SignupPage from '../views/SignupPage.vue';
 
 const routes = [
-  { path: '/', name: 'Home', component: HomePage },
-  { path: '/login', name: 'Login', component: LoginPage },
-  { path: '/signup', name: 'Signup', component: SignupPage }
+  {
+    path: '/',
+    redirect: '/login'  // Redirect root to the login page
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginPage
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: SignupPage
+  },
+  {
+    path: '/home',
+    name: 'Home',
+    component: HomePage
+  }
 ];
 
 const router = createRouter({
