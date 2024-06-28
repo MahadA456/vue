@@ -4,6 +4,11 @@
       "id": "3cdb",
       "email": "user@nextmail.com",
       "password": "1234"
+    },
+    {
+      "id": "b36c",
+      "email": "user@nextmail.com",
+      "password": "1234"
     }
   ],
   "posts": [
