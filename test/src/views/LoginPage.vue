@@ -7,7 +7,7 @@
             <div class="card-body">
               <img src="@/assets/bookworm.png" alt="Logo" class="logo">
               <h1 class="card-title text-center">Login</h1>
-              <form @submit.prevent="login" class="p-4">
+              <form @submit.prevent="performLogin" class="p-4">
                 <div class="mb-3">
                   <label for="email" class="form-label">Email address</label>
                   <input type="email" class="form-control" id="email" v-model="email" required>
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'LoginPage',
   data() {
@@ -37,10 +39,15 @@ export default {
     };
   },
   methods: {
-    login() {
-      // Implement your login logic here
-      console.log('Attempt to login with', this.email, this.password);
-      // You might want to add a real authentication process here
+    ...mapActions(['login']),
+    async performLogin() {
+      try {
+        await this.login({ email: this.email, password: this.password });
+        this.$router.push('/home');
+      } catch (error) {
+        console.error('Login error:', error);
+        alert('Invalid credentials or an error occurred.');
+      }
     }
   }
 }

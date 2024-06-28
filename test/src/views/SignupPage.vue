@@ -7,16 +7,17 @@
             <div class="card-body">
               <img src="@/assets/bookworm.png" alt="Logo" class="logo">
               <h1 class="card-title text-center">Sign Up</h1>
-              <form @submit.prevent="signup" class="p-4">
+              <form @submit.prevent="performSignup" class="p-4">
                 <div class="mb-3">
                   <label for="email" class="form-label">Email address</label>
-                  <input type="email" class="form-control" id="email" v-model="email" required @focus="changeBackground" @blur="resetBackground">
+                  <input type="email" class="form-control" id="email" v-model="email" required>
                 </div>
                 <div class="mb-3">
                   <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="password" v-model="password" required @focus="changeBackground" @blur="resetBackground">
+                  <input type="password" class="form-control" id="password" v-model="password" required>
                 </div>
                 <button type="submit" class="btn btn-success w-100">Sign Up</button>
+                <p class="mt-3 text-center">Already have an account? <router-link to="/login">Login here</router-link></p>
               </form>
             </div>
           </div>
@@ -27,6 +28,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'SignupPage',
   data() {
@@ -36,14 +39,16 @@ export default {
     };
   },
   methods: {
-    signup() {
-      console.log('Signup attempt with', this.email, this.password);
-    },
-    changeBackground(e) {
-      e.target.style.backgroundColor = "#f0f0f0";
-    },
-    resetBackground(e) {
-      e.target.style.backgroundColor = "";
+    ...mapActions(['registerUser']),
+    async performSignup() {
+      try {
+        await this.registerUser({ email: this.email, password: this.password });
+        alert('Signup successful. Please login.');
+        this.$router.push('/login');
+      } catch (error) {
+        console.error('Signup error:', error);
+        alert('An error occurred. Please try again.');
+      }
     }
   }
 }
@@ -51,7 +56,7 @@ export default {
 
 <style scoped>
 .signup-page {
-  background: url('@/assets/background-light.jpg') no-repeat center center fixed;
+  background: url('@/assets/background.jpg') no-repeat center center fixed;
   background-size: cover;
 }
 
