@@ -28,28 +28,38 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'SignupPage',
-  data() {
-    return {
-      email: '',
-      password: ''
-    };
-  },
-  methods: {
-    ...mapActions(['registerUser']),
-    async performSignup() {
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    const email = ref('');
+    const password = ref('');
+
+    const performSignup = async () => {
       try {
-        await this.registerUser({ email: this.email, password: this.password });
-        alert('Signup successful. Please login.');
-        this.$router.push('/login');
+        const success = await store.dispatch('registerUser', { email: email.value, password: password.value });
+        if (success) {
+          alert('Signup successful. Please login.');
+          router.push('/login');
+        } else {
+          alert('Email already registered. Please use a different email.');
+        }
       } catch (error) {
         console.error('Signup error:', error);
         alert('An error occurred. Please try again.');
       }
-    }
+    };
+
+    return {
+      email,
+      password,
+      performSignup
+    };
   }
 }
 </script>

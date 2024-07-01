@@ -28,27 +28,37 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'LoginPage',
-  data() {
-    return {
-      email: '',
-      password: ''
-    };
-  },
-  methods: {
-    ...mapActions(['login']),
-    async performLogin() {
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    const email = ref('');
+    const password = ref('');
+
+    const performLogin = async () => {
       try {
-        await this.login({ email: this.email, password: this.password });
-        this.$router.push('/home');
+        const success = await store.dispatch('login', { email: email.value, password: password.value });
+        if (success) {
+          router.push('/home');
+        } else {
+          alert('Invalid credentials or an error occurred.');
+        }
       } catch (error) {
         console.error('Login error:', error);
         alert('Invalid credentials or an error occurred.');
       }
-    }
+    };
+
+    return {
+      email,
+      password,
+      performLogin
+    };
   }
 }
 </script>

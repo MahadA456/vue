@@ -9,6 +9,21 @@
       "id": "b36c",
       "email": "user@nextmail.com",
       "password": "1234"
+    },
+    {
+      "id": "80ca",
+      "email": "demo@internee.pk",
+      "password": "123"
+    },
+    {
+      "id": "c27c",
+      "email": "mahadalam3@gmail.com",
+      "password": "123"
+    },
+    {
+      "id": "f5a1",
+      "email": "mahadalam3@gmail.com",
+      "password": "123"
     }
   ],
   "posts": [
