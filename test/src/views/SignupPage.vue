@@ -1,3 +1,4 @@
+<!-- src/views/SignupPage.vue -->
 <template>
   <div class="signup-page">
     <div class="container py-5">
@@ -31,6 +32,7 @@
 import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 
 export default {
   name: 'SignupPage',
@@ -41,17 +43,22 @@ export default {
     const password = ref('');
 
     const performSignup = async () => {
+      if (password.value.length < 8) {
+        Swal.fire('Error', 'Password must be at least 8 characters long', 'error');
+        return;
+      }
+
       try {
         const success = await store.dispatch('registerUser', { email: email.value, password: password.value });
         if (success) {
-          alert('Signup successful. Please login.');
+          Swal.fire('Success', 'Signup successful. Please login.', 'success');
           router.push('/login');
         } else {
-          alert('Email already registered. Please use a different email.');
+          Swal.fire('Error', 'Email already registered. Please use a different email.', 'error');
         }
       } catch (error) {
         console.error('Signup error:', error);
-        alert('An error occurred. Please try again.');
+        Swal.fire('Error', 'An error occurred. Please try again.', 'error');
       }
     };
 

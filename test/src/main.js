@@ -2,14 +2,13 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
-import store from './store'; // Import the Vuex store
-import 'element-plus/dist/index.css';
-import ElementPlus from 'element-plus';
-import './assets/main.css'; // Global styles
+import store from './store';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap';
+import './assets/main.css';
+import 'sweetalert2/dist/sweetalert2.min.css'; // Import SweetAlert2 CSS
 
 const app = createApp(App);
 app.use(router);
-app.use(store); // Use the Vuex store
-app.use(ElementPlus);
+app.use(store);
 app.mount('#app');

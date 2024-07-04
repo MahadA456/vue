@@ -1,3 +1,4 @@
+<!-- src/views/LoginPage.vue -->
 <template>
   <div class="login-page">
     <div class="container py-5">
@@ -31,6 +32,7 @@
 import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 
 export default {
   name: 'LoginPage',
@@ -44,13 +46,19 @@ export default {
       try {
         const success = await store.dispatch('login', { email: email.value, password: password.value });
         if (success) {
-          router.push('/home');
+          const currentUser = store.getters.currentUser;
+          Swal.fire('Success', 'Login successful', 'success');
+          if (currentUser.isAdmin) {
+            router.push('/admin');
+          } else {
+            router.push('/home');
+          }
         } else {
-          alert('Invalid credentials or an error occurred.');
+          Swal.fire('Error', 'Invalid credentials or an error occurred.', 'error');
         }
       } catch (error) {
         console.error('Login error:', error);
-        alert('Invalid credentials or an error occurred.');
+        Swal.fire('Error', 'Invalid credentials or an error occurred.', 'error');
       }
     };
 

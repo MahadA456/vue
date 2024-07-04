@@ -24,6 +24,31 @@
       "id": "f5a1",
       "email": "mahadalam3@gmail.com",
       "password": "123"
+    },
+    {
+      "id": "2ef5",
+      "email": "user3@nextmail.com",
+      "password": "1234567890"
+    },
+    {
+      "id": "3381",
+      "email": "user22@nextmail.com",
+      "password": "123"
+    },
+    {
+      "id": "fdba",
+      "email": "arham12@gmail.com",
+      "password": "123"
+    },
+    {
+      "id": "0198",
+      "email": "arham@gmail123",
+      "password": "123"
+    },
+    {
+      "id": "738b",
+      "email": "uzair123@gmail.com",
+      "password": "123"
     }
   ],
   "posts": [

@@ -1,13 +1,17 @@
+<!-- src/App.vue -->
 <template>
-  <div id="app">
-    <RouterView /> <!-- This will render the component based on the route -->
-  </div>
+  <RouterView />
 </template>
 
-<script setup>
-import { RouterView } from 'vue-router'
+<script>
+export default {
+  name: 'App',
+  created() {
+    this.$store.dispatch('autoLogin');
+  }
+}
 </script>
 
 <style>
-/* Add global styles here */
+/* Global styles if any */
 </style>
