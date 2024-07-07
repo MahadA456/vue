@@ -1,28 +1,22 @@
 <!-- src/views/LoginPage.vue -->
 <template>
-  <div class="login-page">
-    <div class="container py-5">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="card login-card">
-            <div class="card-body">
-              <img src="@/assets/bookworm.png" alt="Logo" class="logo">
-              <h1 class="card-title text-center">Login</h1>
-              <form @submit.prevent="performLogin" class="p-4">
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email address</label>
-                  <input type="email" class="form-control" id="email" v-model="email" required>
-                </div>
-                <div class="mb-3">
-                  <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="password" v-model="password" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Login</button>
-                <p class="mt-3 text-center">Don't have an account? <router-link to="/signup">Sign up here</router-link></p>
-              </form>
-            </div>
+  <div class="login-page min-h-screen flex items-center justify-center bg-cover bg-center bg-fixed" style="background-image: url('@/assets/background.jpg');">
+    <div class="w-full max-w-md p-5">
+      <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-lg shadow-lg p-6">
+        <img src="@/assets/bookworm.png" alt="Logo" class="w-24 mx-auto mb-4">
+        <h1 class="text-2xl text-center font-semibold mb-6">Login</h1>
+        <form @submit.prevent="performLogin">
+          <div class="mb-4">
+            <label for="email" class="block text-gray-700 font-medium mb-2">Email address</label>
+            <input type="email" id="email" v-model="email" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-500">
           </div>
-        </div>
+          <div class="mb-4">
+            <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
+            <input type="password" id="password" v-model="password" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-500">
+          </div>
+          <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200">Login</button>
+          <p class="mt-4 text-center text-gray-700">Don't have an account? <router-link to="/signup" class="text-blue-500 hover:underline">Sign up here</router-link></p>
+        </form>
       </div>
     </div>
   </div>
@@ -33,6 +27,8 @@ import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
+import '../assets/tailwind.css';
+
 
 export default {
   name: 'LoginPage',
@@ -73,18 +69,6 @@ export default {
 
 <style scoped>
 .login-page {
-  background: url('@/assets/background.jpg') no-repeat center center fixed;
-  background-size: cover;
-}
-
-.login-card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-}
-
-.logo {
-  width: 150px;
-  display: block;
-  margin: 20px auto;
+  /* No change needed here as Tailwind's utility classes handle the background styling */
 }
 </style>
