@@ -4,12 +4,12 @@
     <div :class="['w-64 bg-white shadow-lg transform transition-transform duration-300', { '-translate-x-full': !sidebarOpen }]">
       <div class="p-6">
         <div class="flex items-center justify-center mb-6">
-          <img src="@/assets/bookworm.png" alt="Logo" class="w-24">
+          <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 rounded-full border-black border">
         </div>
         <div class="flex items-center space-x-4">
           <img src="@/assets/user-avatar.png" alt="User Avatar" class="w-12 h-12 rounded-full">
           <div>
-            <h2 class="text-lg font-semibold">Bookstore System</h2>
+            <h2 class="text-lg font-semibold">Book Worm Administration</h2>
             <p class="text-sm text-gray-600">Admin</p>
           </div>
         </div>
@@ -39,7 +39,7 @@
 
       <!-- Add Book Button -->
       <div class="mb-6">
-        <button @click="showAddBookModal = true" class="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition duration-200">+ Add New Book</button>
+        <button @click="showAddBookModal = true" class="w-full bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600 transition duration-200">+ Add New Book</button>
       </div>
 
       <!-- Books Table -->
@@ -60,9 +60,9 @@
               <td class="px-6 py-4 whitespace-nowrap">{{ book.title }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ book.year }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ book.author }}</td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <button @click="editBook(book)" class="bg-blue-500 text-white px-2 py-1 rounded-lg hover:bg-blue-600 transition duration-200">Edit</button>
-                <button @click="deleteBook(book.id)" class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600 transition duration-200 ml-2">Delete</button>
+              <td class="px-6 py-4 whitespace-nowrap flex space-x-2">
+                <button @click="editBook(book)" class="flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200">Edit</button>
+                <button @click="deleteBook(book.id)" class="flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition duration-200">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -84,7 +84,9 @@
             </div>
             <div class="mb-4">
               <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
-              <input type="number" id="year" v-model="newBook.year" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <select id="year" v-model="newBook.year" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+              </select>
             </div>
             <button type="submit" class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-200">Add Book</button>
           </form>
@@ -107,7 +109,9 @@
             </div>
             <div class="mb-4">
               <label for="editYear" class="block text-sm font-medium text-gray-700">Year</label>
-              <input type="number" id="editYear" v-model="editBookData.year" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <select id="editYear" v-model="editBookData.year" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+              </select>
             </div>
             <button type="submit" class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-200">Update Book</button>
           </form>
@@ -140,9 +144,14 @@ export default {
       year: ''
     });
     const showAddBookModal = ref(false);
-    const sidebarOpen = ref(true);
+    const sidebarOpen = ref(false);
 
     const books = computed(() => store.getters.allBooks);
+
+    const years = [];
+    for (let year = 1900; year <= new Date().getFullYear(); year++) {
+      years.push(year);
+    }
 
     onMounted(() => {
       store.dispatch('fetchBooks');
@@ -185,6 +194,7 @@ export default {
       showAddBookModal,
       sidebarOpen,
       books,
+      years,
       createBook,
       editBook,
       updateBook,
@@ -201,12 +211,16 @@ export default {
 }
 
 .bg-main-content {
-  background-image: url('@/assets/123.png');
+  background-image: url('@/assets/bgimage.jpg');
   background-size: cover;
   background-position: center;
 }
 
 .admin-dashboard {
-  background-image: url('@/assets/background.jpg');
+  background-image: url('@/assets/bgimage.jpg');
+}
+
+button {
+  width: 100%;
 }
 </style>
