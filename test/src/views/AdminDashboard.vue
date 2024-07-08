@@ -23,7 +23,7 @@
                 <button type="submit" class="btn btn-success w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">Add Book</button>
               </form>
               <h2 class="text-center text-xl font-bold mb-4 text-purple-700">Books</h2>
-              <table class="table table-striped w-full text-left">
+              <table v-if="books.length" class="table table-striped w-full text-left">
                 <thead>
                   <tr>
                     <th class="px-4 py-2 text-purple-600">Title</th>
@@ -83,7 +83,8 @@
 import { ref, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import Swal from 'sweetalert2'; // Import SweetAlert2
-import '../assets/tailwind.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap'; // Import Bootstrap JS
 
 export default {
   name: 'AdminDashboard',
