@@ -3,6 +3,9 @@
     <!-- Sidebar -->
     <div :class="['w-64 bg-white shadow-lg transform transition-transform duration-300', { '-translate-x-full': !sidebarOpen }]">
       <div class="p-6">
+        <div class="flex items-center justify-center mb-6">
+          <img src="@/assets/bookworm.png" alt="Logo" class="w-24">
+        </div>
         <div class="flex items-center space-x-4">
           <img src="@/assets/user-avatar.png" alt="User Avatar" class="w-12 h-12 rounded-full">
           <div>
