@@ -1,21 +1,19 @@
-<!-- src/views/SignupPage.vue -->
 <template>
-  <div class="signup-page min-h-screen flex items-center justify-center bg-cover bg-center bg-fixed" style="background-image: url('@/assets/background.jpg');">
+  <div class="signup-page min-h-screen flex items-center justify-center bg-cover bg-center bg-fixed">
     <div class="w-full max-w-md p-5">
-      <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-lg shadow-lg p-6">
-        <img src="@/assets/bookworm.png" alt="Logo" class="w-24 mx-auto mb-4">
-        <h1 class="text-2xl text-center font-semibold mb-6">Sign Up</h1>
-        <form @submit.prevent="performSignup">
+      <div class="bg-white bg-opacity-90 rounded-lg shadow-lg p-6 animate__animated animate__fadeInDown">
+        <h1 class="text-2xl text-center font-semibold mb-6 text-gray-800 animate__animated animate__fadeIn">Sign Up</h1>
+        <form @submit.prevent="performSignup" class="space-y-4 animate__animated animate__fadeInUp">
           <div class="mb-4">
             <label for="email" class="block text-gray-700 font-medium mb-2">Email address</label>
-            <input type="email" id="email" v-model="email" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-500">
+            <input type="email" id="email" v-model="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
           </div>
           <div class="mb-4">
             <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
-            <input type="password" id="password" v-model="password" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-500">
+            <input type="password" id="password" v-model="password" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
           </div>
-          <button type="submit" class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-200">Sign Up</button>
-          <p class="mt-4 text-center text-gray-700">Already have an account? <router-link to="/login" class="text-blue-500 hover:underline">Login here</router-link></p>
+          <button type="submit" class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-200 transform hover:scale-105">Sign Up</button>
+          <p class="mt-4 text-center text-gray-600">Already have an account? <router-link to="/login" class="text-indigo-500 hover:underline">Login here</router-link></p>
         </form>
       </div>
     </div>
@@ -28,6 +26,7 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
 import '../assets/tailwind.css';
+import 'animate.css'; // Import animate.css for animations
 
 export default {
   name: 'SignupPage',
@@ -68,6 +67,9 @@ export default {
 
 <style scoped>
 .signup-page {
-  /* No change needed here as Tailwind's utility classes handle the background styling */
+  background-image: url('@/assets/meta.jpg');
+  background-size: contain; /* Use contain to ensure the whole image is visible */
+  background-repeat: no-repeat;
+  background-position: center;
 }
 </style>
