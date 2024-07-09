@@ -4,7 +4,7 @@ import HomePage from '../views/HomePage.vue';
 import LoginPage from '../views/LoginPage.vue';
 import SignupPage from '../views/SignupPage.vue';
 import AdminDashboard from '../views/AdminDashboard.vue';
-import UserDashboard from '../views/UserDashboard.vue';  // Import the UserDashboard
+import UserDashboard from '../views/UserDashboard.vue';  // Import UserDashboard
 
 const routes = [
   {
@@ -36,7 +36,7 @@ const routes = [
     meta: { requiresAuth: true }  // Requires user to be authenticated
   },
   {
-    path: '/user-dashboard',
+    path: '/user',
     name: 'UserDashboard',
     component: UserDashboard,
     meta: { requiresAuth: true }  // Requires user to be authenticated
@@ -59,7 +59,7 @@ router.beforeEach((to, from, next) => {
     if (currentUser.isAdmin) {
       next('/admin');
     } else {
-      next('/user-dashboard');
+      next('/user');  // Redirect to UserDashboard if logged in as user
     }
   } else {
     next();

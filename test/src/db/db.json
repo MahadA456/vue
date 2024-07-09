@@ -105,19 +105,22 @@
       "id": "0fea",
       "title": "blind lake",
       "author": "JK ROWLING",
-      "year": 2018
+      "year": 2018,
+      "genre": "Non-fiction"
     },
     {
       "id": "0ed0",
       "title": "sir zeehsna vue skills",
       "author": "JK ROWLING",
-      "year": 2024
+      "year": 2024,
+      "genre": "Science Fiction"
     },
     {
       "id": "8d68",
       "title": "neqa life",
       "author": "JK ROWLING",
-      "year": 2025
+      "year": 1919,
+      "genre": "Fantasy"
     }
   ]
 }

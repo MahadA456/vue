@@ -1,3 +1,4 @@
+// src/store/index.js
 import { createStore } from 'vuex';
 import axios from 'axios';
 import persistState from './persist';
@@ -10,7 +11,7 @@ export default createStore({
   state: {
     user: null,
     books: [],
-    genres: ['Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Thriller', 'Biography','Other']
+    genres: ['Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Thriller', 'Biography', 'Other']
   },
   mutations: {
     setUser(state, user) {
@@ -40,7 +41,7 @@ export default createStore({
           commit('setUser', { email, isAdmin: true });
           return true;
         }
-        
+
         // For regular users, check the JSON server
         const response = await axios.get('http://localhost:3000/users', {
           params: { email, password }
@@ -97,6 +98,16 @@ export default createStore({
     async fetchBooks({ commit }) {
       try {
         const response = await axios.get('http://localhost:3000/books');
+        commit('setBooks', response.data);
+      } catch (error) {
+        console.error('Failed to fetch books:', error);
+      }
+    },
+    async fetchBooksByGenre({ commit }, genre) {
+      try {
+        const response = await axios.get('http://localhost:3000/books', {
+          params: { genre }
+        });
         commit('setBooks', response.data);
       } catch (error) {
         console.error('Failed to fetch books:', error);

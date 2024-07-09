@@ -51,7 +51,7 @@ export default {
           if (currentUser.isAdmin) {
             router.push('/admin');
           } else {
-            router.push('/home');
+            router.push('/user'); // Redirect to UserDashboard
           }
         } else {
           Swal.fire('Error', 'Invalid credentials or an error occurred.', 'error');
