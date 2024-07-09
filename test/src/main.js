@@ -1,6 +1,5 @@
 // src/main.js
-import firebase from  'firebase/app';
-import 'firebase/storage';
+import * as firebase from 'firebase/app';
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
@@ -24,4 +23,5 @@ const firebaseConfig = {
     appId: "1:65926355935:web:e3a66237ffee4de62b826a",
     measurementId: "G-ZRSNZ6LRWB"
   };
-firebase.initializeApp(firebaseConfig)
+
+  firebase.initializeApp(firebaseConfig);

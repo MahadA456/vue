@@ -23,6 +23,7 @@
     "json-server": "^1.0.0-beta.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
+    "npm": "^10.8.1",
     "sweetalert2": "^11.12.1",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",
@@ -38,7 +39,9 @@
     "postcss": "^8.4.39",
     "prettier": "^3.2.5",
     "tailwindcss": "^3.4.4",
-    "vite": "^5.3.1",
-    "vite-plugin-vue-devtools": "^7.3.1"
+    "unplugin-auto-import": "^0.17.6",
+    "unplugin-vue-components": "^0.27.2",
+    "vite": "^5.3.3",
+    "vite-plugin-vue-devtools": "^7.3.5"
   }
 }
