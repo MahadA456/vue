@@ -6,7 +6,7 @@
           <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 rounded-full border-black border">
         </div>
         <h2 class="text-center text-lg font-semibold mb-4">Book Worm</h2>
-        <p class="text-center text-sm text-gray-700 mb-6">Get Lost In a Good Book</p>
+        <p class="text-center text-sm text-gray-700 mb-6 tagline">Get Lost In a Good Book</p>
         <h3 class="text-lg font-semibold mb-4">Genres</h3>
         <ul>
           <li v-for="genre in genres" :key="genre" class="mb-2">
@@ -19,7 +19,7 @@
       <div class="flex-1 p-8 bg-main-content">
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
-          <h1 class="text-2xl font-bold text-gray-800">Books by Genre</h1>
+          <h1 class="text-2xl font-bold text-gray-800">Books</h1>
           <button @click="logout" class="btn btn-red">Logout</button>
         </div>
   
@@ -30,18 +30,16 @@
   
         <!-- Books List -->
         <div v-if="filteredBooks.length > 0">
-          <div v-for="genre in genres" :key="genre" class="mb-8">
-            <h2 class="text-xl font-semibold mb-4 text-gray-700">{{ genre }}</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div v-for="book in booksByGenre(genre)" :key="book.id" class="bg-white p-4 rounded-lg shadow-lg">
-                <h3 class="text-lg font-semibold">{{ book.title }}</h3>
-                <p class="text-gray-600">Author: {{ book.author }}</p>
-                <p class="text-gray-600">Year: {{ book.year }}</p>
-              </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div v-for="book in filteredBooks" :key="book.id" class="bg-white p-4 rounded-lg shadow-lg">
+              <h3 class="text-lg font-semibold">{{ book.title }}</h3>
+              <p class="text-gray-600">Author: {{ book.author }}</p>
+              <p class="text-gray-600">Year: {{ book.year }}</p>
+              <p class="text-gray-600">Genre: {{ book.genre }}</p>
             </div>
           </div>
         </div>
-        <div v-else class="text-center text-gray-700">Sorry, can't find any books of this author.</div>
+        <!-- Removed the inline message for no books found -->
       </div>
     </div>
   </template>
@@ -62,6 +60,9 @@
   
       const filterByGenre = (genre) => {
         filteredBooks.value = books.value.filter(book => book.genre === genre);
+        if (filteredBooks.value.length === 0) {
+          Swal.fire('No Books Found', 'Sorry, no books were found for the selected genre.', 'info');
+        }
       };
   
       const searchByAuthor = () => {
@@ -69,10 +70,6 @@
         if (filteredBooks.value.length === 0 && searchQuery.value.trim() !== '') {
           Swal.fire('No Books Found', 'Sorry, no books were found for the entered author.', 'info');
         }
-      };
-  
-      const booksByGenre = (genre) => {
-        return filteredBooks.value.filter(book => book.genre === genre);
       };
   
       const logout = () => {
@@ -90,7 +87,6 @@
         searchQuery,
         filteredBooks,
         filterByGenre,
-        booksByGenre,
         searchByAuthor,
         logout
       };
@@ -126,6 +122,11 @@
     background-color: #c9302c;
   }
   
+  .tagline {
+    font-family: 'Dancing Script', cursive; /* Use the same font as the login page */
+    font-size: 1.25rem;
+  }
+  
   @media (max-width: 640px) {
     .user-dashboard {
       flex-direction: column;
@@ -134,6 +135,9 @@
       width: 100%;
     }
     .flex-1 {
+      width: 100%;
+    }
+    .btn {
       width: 100%;
     }
   }
