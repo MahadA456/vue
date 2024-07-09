@@ -1,8 +1,11 @@
-// server.js (at the root or appropriate directory outside 'src')
-const jsonServer = require('json-server');
+import jsonServer from 'json-server';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
 const server = jsonServer.create();
-const path = require('path');
-const router = jsonServer.router(path.join(__dirname, 'src', 'db', 'db.json'));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const router = jsonServer.router(join(__dirname, 'src', 'db', 'db.json'));
 const middlewares = jsonServer.defaults();
 
 server.use(middlewares);

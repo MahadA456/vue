@@ -33,10 +33,13 @@
         <div>
           <button @click="sidebarOpen = !sidebarOpen" class="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-200">☰</button>
         </div>
-        <div class="flex space-x-4">
-          <button @click="showAddBookModal = true" class="bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 transition duration-200">+ Add New Book</button>
-          <button @click="logout" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-200">Logout</button>
-        </div>
+        <h1 class="text-2xl font-bold text-gray-800">Book Details</h1>
+        <button @click="logout" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200">Logout</button>
+      </div>
+
+      <!-- Add Book Button -->
+      <div class="mb-6">
+        <button @click="showAddBookModal = true" class="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition duration-200">+ Add New Book</button>
       </div>
 
       <!-- Books Table -->
@@ -58,8 +61,8 @@
               <td class="px-6 py-4 whitespace-nowrap">{{ book.year }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ book.author }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <button @click="editBook(book)" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200">Edit</button>
-                <button @click="deleteBook(book.id)" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200 ml-2">Delete</button>
+                <button @click="editBook(book)" class="bg-blue-500 text-white px-2 py-1 rounded-lg hover:bg-blue-600 transition duration-200">Edit</button>
+                <button @click="deleteBook(book.id)" class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600 transition duration-200 ml-2">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -81,9 +84,7 @@
             </div>
             <div class="mb-4">
               <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
-              <select id="year" v-model="newBook.year" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-              </select>
+              <input type="number" id="year" v-model="newBook.year" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
             <button type="submit" class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-200">Add Book</button>
           </form>
@@ -106,9 +107,7 @@
             </div>
             <div class="mb-4">
               <label for="editYear" class="block text-sm font-medium text-gray-700">Year</label>
-              <select id="editYear" v-model="editBookData.year" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-              </select>
+              <input type="number" id="editYear" v-model="editBookData.year" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
             <button type="submit" class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-200">Update Book</button>
           </form>
@@ -141,10 +140,9 @@ export default {
       year: ''
     });
     const showAddBookModal = ref(false);
-    const sidebarOpen = ref(false);
+    const sidebarOpen = ref(true);
 
     const books = computed(() => store.getters.allBooks);
-    const years = Array.from({ length: 2025 - 1900 + 1 }, (_, i) => i + 1900);
 
     onMounted(() => {
       store.dispatch('fetchBooks');
@@ -187,7 +185,6 @@ export default {
       showAddBookModal,
       sidebarOpen,
       books,
-      years,
       createBook,
       editBook,
       updateBook,
@@ -211,15 +208,5 @@ export default {
 
 .admin-dashboard {
   background-image: url('@/assets/bgimage.jpg');
-}
-
-button {
-  width: auto;
-  padding: 0.5rem 1rem;
-}
-
-h2 {
-  font-size: 1.5rem;
-  font-weight: bold;
 }
 </style>
