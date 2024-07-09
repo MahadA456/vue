@@ -103,4 +103,27 @@ export default {
 img {
   border: 2px solid black;
 }
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .login-page {
+    padding: 1rem;
+  }
+  .bg-custom {
+    padding: 2rem 1rem;
+  }
+  .tagline {
+    font-size: 1rem;
+  }
+  .w-24 {
+    width: 5rem;
+    height: 5rem;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }
+  button {
+    padding: 0.75rem 1rem;
+  }
+}
 </style>

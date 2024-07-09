@@ -14,6 +14,10 @@
             <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
             <input type="password" id="password" v-model="password" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
           </div>
+          <div class="mb-4">
+            <label for="confirmPassword" class="block text-gray-700 font-medium mb-2">Confirm Password</label>
+            <input type="password" id="confirmPassword" v-model="confirmPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
+          </div>
           <button type="submit" class="w-full bg-signup-button text-white py-2 rounded-lg hover:bg-signup-button-hover transition duration-200 transform hover:scale-105">Sign Up</button>
           <p class="mt-4 text-center text-gray-600">Already have an account? <router-link to="/login" class="text-signup-link hover:underline">Login here</router-link></p>
         </form>
@@ -37,8 +41,13 @@ export default {
     const router = useRouter();
     const email = ref('');
     const password = ref('');
+    const confirmPassword = ref('');
 
     const performSignup = async () => {
+      if (password.value !== confirmPassword.value) {
+        Swal.fire('Error', 'Passwords do not match', 'error');
+        return;
+      }
       if (password.value.length < 8) {
         Swal.fire('Error', 'Password must be at least 8 characters long', 'error');
         return;
@@ -61,6 +70,7 @@ export default {
     return {
       email,
       password,
+      confirmPassword,
       performSignup
     };
   }
@@ -98,5 +108,28 @@ export default {
 
 img {
   border: 2px solid black;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .signup-page {
+    padding: 1rem;
+  }
+  .bg-custom {
+    padding: 2rem 1rem;
+  }
+  .tagline {
+    font-size: 1rem;
+  }
+  .w-24 {
+    width: 5rem;
+    height: 5rem;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }
+  button {
+    padding: 0.75rem 1rem;
+  }
 }
 </style>

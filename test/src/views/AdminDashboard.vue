@@ -31,15 +31,17 @@
       <!-- Header -->
       <div class="flex justify-between items-center mb-6">
         <div>
-          <button @click="sidebarOpen = !sidebarOpen" class="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-200">☰</button>
+          <button @click="sidebarOpen = !sidebarOpen" class="btn btn-gray">☰</button>
         </div>
         <h1 class="text-2xl font-bold text-gray-800">Book Details</h1>
-        <button @click="logout" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200">Logout</button>
+        <div>
+          <button @click="logout" class="btn btn-red inline-block">Logout</button>
+        </div>
       </div>
 
       <!-- Add Book Button -->
-      <div class="mb-6">
-        <button @click="showAddBookModal = true" class="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition duration-200">+ Add New Book</button>
+      <div class="mb-6 flex justify-end">
+        <button @click="showAddBookModal = true" class="btn btn-blue">+ Add New Book</button>
       </div>
 
       <!-- Books Table -->
@@ -51,6 +53,7 @@
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book Title</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Genre</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -60,9 +63,10 @@
               <td class="px-6 py-4 whitespace-nowrap">{{ book.title }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ book.year }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ book.author }}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{ book.genre }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <button @click="editBook(book)" class="bg-blue-500 text-white px-2 py-1 rounded-lg hover:bg-blue-600 transition duration-200">Edit</button>
-                <button @click="deleteBook(book.id)" class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600 transition duration-200 ml-2">Delete</button>
+                <button @click="editBook(book)" class="btn btn-blue">Edit</button>
+                <button @click="deleteBook(book.id)" class="btn btn-red ml-2">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -84,11 +88,19 @@
             </div>
             <div class="mb-4">
               <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
-              <input type="number" id="year" v-model="newBook.year" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <select id="year" v-model="newBook.year" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+              </select>
             </div>
-            <button type="submit" class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-200">Add Book</button>
+            <div class="mb-4">
+              <label for="genre" class="block text-sm font-medium text-gray-700">Genre</label>
+              <select id="genre" v-model="newBook.genre" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option v-for="genre in genres" :key="genre" :value="genre">{{ genre }}</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-green">Add Book</button>
           </form>
-          <button @click="showAddBookModal = false" class="mt-4 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition duration-200">Close</button>
+          <button @click="showAddBookModal = false" class="btn btn-red mt-4">Close</button>
         </div>
       </div>
 
@@ -107,11 +119,19 @@
             </div>
             <div class="mb-4">
               <label for="editYear" class="block text-sm font-medium text-gray-700">Year</label>
-              <input type="number" id="editYear" v-model="editBookData.year" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <select id="editYear" v-model="editBookData.year" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+              </select>
             </div>
-            <button type="submit" class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-200">Update Book</button>
+            <div class="mb-4">
+              <label for="editGenre" class="block text-sm font-medium text-gray-700">Genre</label>
+              <select id="editGenre" v-model="editBookData.genre" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option v-for="genre in genres" :key="genre" :value="genre">{{ genre }}</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-green">Update Book</button>
           </form>
-          <button @click="editBookData.id = null" class="mt-4 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition duration-200">Close</button>
+          <button @click="editBookData.id = null" class="btn btn-red mt-4">Close</button>
         </div>
       </div>
     </div>
@@ -131,28 +151,33 @@ export default {
     const newBook = ref({
       title: '',
       author: '',
-      year: ''
+      year: '',
+      genre: ''
     });
     const editBookData = ref({
       id: '',
       title: '',
       author: '',
-      year: ''
+      year: '',
+      genre: ''
     });
     const showAddBookModal = ref(false);
     const sidebarOpen = ref(true);
 
     const books = computed(() => store.getters.allBooks);
 
+    const years = Array.from({ length: 2024 - 1900 + 1 }, (_, i) => 1900 + i); // Array of years from 1900 to 2024
+    const genres = ['Fiction', 'Non-fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Biography']; // Example genres
+
     onMounted(() => {
       store.dispatch('fetchBooks');
     });
 
     const createBook = async () => {
-      if (newBook.value.title && newBook.value.author && newBook.value.year) {
+      if (newBook.value.title && newBook.value.author && newBook.value.year && newBook.value.genre) {
         await store.dispatch('createBook', newBook.value);
         Swal.fire('Success', 'Book added successfully', 'success');
-        newBook.value = { title: '', author: '', year: '' };
+        newBook.value = { title: '', author: '', year: '', genre: '' };
         showAddBookModal.value = false;
       }
     };
@@ -162,9 +187,9 @@ export default {
     };
 
     const updateBook = async () => {
-      if (editBookData.value.title && editBookData.value.author && editBookData.value.year) {
+      if (editBookData.value.title && editBookData.value.author && editBookData.value.year && editBookData.value.genre) {
         await store.dispatch('updateBook', editBookData.value);
-        editBookData.value = { id: '', title: '', author: '', year: '' };
+        editBookData.value = { id: '', title: '', author: '', year: '', genre: '' };
         Swal.fire('Success', 'Book updated successfully', 'success');
       }
     };
@@ -185,6 +210,8 @@ export default {
       showAddBookModal,
       sidebarOpen,
       books,
+      years,
+      genres,
       createBook,
       editBook,
       updateBook,
@@ -208,5 +235,49 @@ export default {
 
 .admin-dashboard {
   background-image: url('@/assets/bgimage.jpg');
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  text-align: center;
+  width: 100%;
+  max-width: 200px;
+}
+
+.btn-green {
+  background-color: #1A5319;
+  color: white;
+}
+
+.btn-green:hover {
+  background-color: #144213;
+}
+
+.btn-red {
+  background-color: #d9534f;
+  color: white;
+}
+
+.btn-red:hover {
+  background-color: #c9302c;
+}
+
+.btn-blue {
+  background-color: #0275d8;
+  color: white;
+}
+
+.btn-blue:hover {
+  background-color: #025aa5;
+}
+
+.btn-gray {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-gray:hover {
+  background-color: #5a6268;
 }
 </style>

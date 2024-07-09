@@ -93,7 +93,8 @@
       "id": "2",
       "title": "Book Two",
       "author": "Author Two",
-      "year": 2002
+      "year": 2002,
+      "genre": "Fiction"
     },
     {
       "id": "0fea",

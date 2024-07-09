@@ -9,7 +9,8 @@ export default createStore({
   plugins: [persistState(500)], // Applying the persistState plugin with 500ms debounce
   state: {
     user: null,
-    books: []
+    books: [],
+    genres: ['Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Thriller', 'Biography','Other']
   },
   mutations: {
     setUser(state, user) {
@@ -56,7 +57,12 @@ export default createStore({
         return false;
       }
     },
-    async registerUser({ commit }, { email, password }) {
+    async registerUser({ commit }, { email, password, confirmPassword }) {
+      if (password !== confirmPassword) {
+        console.error('Signup error: Passwords do not match');
+        return false; // Passwords do not match
+      }
+
       try {
         // Check if the email already exists
         const existingUserResponse = await axios.get('http://localhost:3000/users', {
@@ -130,6 +136,9 @@ export default createStore({
     },
     allBooks(state) {
       return state.books;
+    },
+    allGenres(state) {
+      return state.genres;
     }
   }
 });
