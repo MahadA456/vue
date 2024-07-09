@@ -19,7 +19,7 @@
             <input type="password" id="confirmPassword" v-model="confirmPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
           </div>
           <button type="submit" class="w-full bg-signup-button text-white py-2 rounded-lg hover:bg-signup-button-hover transition duration-200 transform hover:scale-105">Sign Up</button>
-          <p class="mt-4 text-center text-gray-600">Already have an account? <router-link to="/login" class="text-signup-link hover:underline">Login here</router-link></p>
+          <p class="mt-4 text-center text-gray-600">Already have an account? <router-link to="/login" class="text-signup-link hover:underline">Login Here</router-link></p>
         </form>
       </div>
     </div>
@@ -48,13 +48,9 @@ export default {
         Swal.fire('Error', 'Passwords do not match', 'error');
         return;
       }
-      if (password.value.length < 8) {
-        Swal.fire('Error', 'Password must be at least 8 characters long', 'error');
-        return;
-      }
 
       try {
-        const success = await store.dispatch('registerUser', { email: email.value, password: password.value });
+        const success = await store.dispatch('registerUser', { email: email.value, password: password.value, confirmPassword: confirmPassword.value });
         if (success) {
           Swal.fire('Success', 'Signup successful. Please login.', 'success');
           router.push('/login');

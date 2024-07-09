@@ -59,6 +59,11 @@
       "id": "f555",
       "email": "admin@example.com",
       "password": "admin123"
+    },
+    {
+      "id": "e2e3",
+      "email": "zohaib99@gmail.com",
+      "password": "12345678"
     }
   ],
   "posts": [
