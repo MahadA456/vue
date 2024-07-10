@@ -62,8 +62,8 @@
             <tr v-for="(book, index) in books" :key="book.id">
               <td class="px-6 py-4 whitespace-nowrap">{{ index + 1 }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
-  <img :src="book.imgURL" alt="Book Image" class="h-16 w-16 object-cover"/>
-</td>
+                <img :src="book.imgURL" alt="Book Image" class="h-16 w-16 object-cover cursor-pointer" @click="showImageModal(book.imgURL)" />
+              </td>
               <td class="px-6 py-4 whitespace-nowrap">{{ book.title }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ book.year }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ book.author }}</td>
@@ -139,6 +139,14 @@
           <button @click="editBookData.id = null" class="btn btn-red mt-4">Close</button>
         </div>
       </div>
+
+      <!-- Image Modal -->
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-smoke-light" v-if="showImageModalFlag">
+        <div class="bg-white p-4 rounded-lg shadow-lg max-w-3xl w-full relative">
+          <button @click="closeImageModal" class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full">&times;</button>
+          <img :src="currentImage" alt="Book Image" class="w-full h-auto object-cover rounded-lg">
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -180,6 +188,8 @@ export default {
     });
     const showAddBookModal = ref(false);
     const sidebarOpen = ref(true);
+    const showImageModalFlag = ref(false);
+    const currentImage = ref('');
 
     const books = computed(() => store.getters.allBooks);
 
@@ -231,6 +241,16 @@ export default {
       Swal.fire('Deleted', 'Book deleted successfully', 'success');
     };
 
+    const showImageModal = (imageUrl) => {
+      currentImage.value = imageUrl;
+      showImageModalFlag.value = true;
+    };
+
+    const closeImageModal = () => {
+      showImageModalFlag.value = false;
+      currentImage.value = '';
+    };
+
     const logout = () => {
       store.dispatch('logout');
       location.reload(); // Reload to clear state and redirect to login
@@ -248,6 +268,10 @@ export default {
       editBook,
       updateBook,
       deleteBook,
+      showImageModal,
+      closeImageModal,
+      showImageModalFlag,
+      currentImage,
       logout
     };
   }

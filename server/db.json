@@ -69,6 +69,11 @@
       "id": "983f",
       "email": "areeshcutie@gmail.com",
       "password": "areeshstargazer"
+    },
+    {
+      "id": "7239",
+      "email": "rafayqureshi@gmail.com",
+      "password": "123456789"
     }
   ],
   "posts": [
@@ -125,6 +130,15 @@
       "genre": "Science Fiction",
       "imgFile": {},
       "imgURL": "https://firebasestorage.googleapis.com/v0/b/bookworm-a1823.appspot.com/o/images%2Fgithub-workflows-fork.png?alt=media&token=8dd77e3a-6a45-490b-99b8-23bb71a02e7c"
+    },
+    {
+      "id": "c056",
+      "title": "Dice Game",
+      "author": "Rafay Qureshi",
+      "year": 2024,
+      "genre": "Science Fiction",
+      "imgFile": {},
+      "imgURL": "https://firebasestorage.googleapis.com/v0/b/bookworm-a1823.appspot.com/o/images%2Fdice.PNG?alt=media&token=5ea96993-3854-42c9-859b-efc30a0218a2"
     }
   ]
 }
