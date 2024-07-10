@@ -1,131 +1,130 @@
 {
-    "users": [
-      {
-        "id": "3cdb",
-        "email": "user@nextmail.com",
-        "password": "1234"
-      },
-      {
-        "id": "b36c",
-        "email": "user@nextmail.com",
-        "password": "1234"
-      },
-      {
-        "id": "80ca",
-        "email": "demo@internee.pk",
-        "password": "123"
-      },
-      {
-        "id": "c27c",
-        "email": "mahadalam3@gmail.com",
-        "password": "123"
-      },
-      {
-        "id": "f5a1",
-        "email": "mahadalam3@gmail.com",
-        "password": "123"
-      },
-      {
-        "id": "2ef5",
-        "email": "user3@nextmail.com",
-        "password": "1234567890"
-      },
-      {
-        "id": "3381",
-        "email": "user22@nextmail.com",
-        "password": "123"
-      },
-      {
-        "id": "fdba",
-        "email": "arham12@gmail.com",
-        "password": "123"
-      },
-      {
-        "id": "0198",
-        "email": "arham@gmail123",
-        "password": "123"
-      },
-      {
-        "id": "738b",
-        "email": "uzair123@gmail.com",
-        "password": "123"
-      },
-      {
-        "id": "ec61",
-        "email": "areesh12@gmail.com",
-        "password": "12345678"
-      },
-      {
-        "id": "f555",
-        "email": "admin@example.com",
-        "password": "admin123"
-      },
-      {
-        "id": "e2e3",
-        "email": "zohaib99@gmail.com",
-        "password": "12345678"
-      },
-      {
-        "id": "983f",
-        "email": "areeshcutie@gmail.com",
-        "password": "areeshstargazer"
-      }
-    ],
-    "posts": [
-      {
-        "id": "1",
-        "title": "a title",
-        "views": 100
-      },
-      {
-        "id": "2",
-        "title": "another title",
-        "views": 200
-      }
-    ],
-    "comments": [
-      {
-        "id": "1",
-        "text": "a comment about post 1",
-        "postId": "1"
-      },
-      {
-        "id": "2",
-        "text": "another comment about post 1",
-        "postId": "1"
-      }
-    ],
-    "profile": {
-      "name": "typicode"
+  "users": [
+    {
+      "id": "3cdb",
+      "email": "user@nextmail.com",
+      "password": "1234"
     },
-    "books": [
-      {
-        "id": "2",
-        "title": "Book Two",
-        "author": "Author Two",
-        "year": 2002,
-        "genre": "Fiction"
-      },
-      {
-        "id": "0fea",
-        "title": "blind lake",
-        "author": "JK ROWLING",
-        "year": 2018,
-        "genre": "Non-fiction"
-      },
-      {
-        "id": "0ed0",
-        "title": "sir zeehsna vue skills",
-        "author": "JK ROWLING",
-        "year": 2024,
-        "genre": "Science Fiction"
-      },
-      {
-        "id": "8d68",
-        "title": "neqa life",
-        "author": "JK ROWLING",
-        "year": 1919,
-        "genre": "Fantasy"
-      }
-    ]
-  }
+    {
+      "id": "b36c",
+      "email": "user@nextmail.com",
+      "password": "1234"
+    },
+    {
+      "id": "80ca",
+      "email": "demo@internee.pk",
+      "password": "123"
+    },
+    {
+      "id": "c27c",
+      "email": "mahadalam3@gmail.com",
+      "password": "123"
+    },
+    {
+      "id": "f5a1",
+      "email": "mahadalam3@gmail.com",
+      "password": "123"
+    },
+    {
+      "id": "2ef5",
+      "email": "user3@nextmail.com",
+      "password": "1234567890"
+    },
+    {
+      "id": "3381",
+      "email": "user22@nextmail.com",
+      "password": "123"
+    },
+    {
+      "id": "fdba",
+      "email": "arham12@gmail.com",
+      "password": "123"
+    },
+    {
+      "id": "0198",
+      "email": "arham@gmail123",
+      "password": "123"
+    },
+    {
+      "id": "738b",
+      "email": "uzair123@gmail.com",
+      "password": "123"
+    },
+    {
+      "id": "ec61",
+      "email": "areesh12@gmail.com",
+      "password": "12345678"
+    },
+    {
+      "id": "f555",
+      "email": "admin@example.com",
+      "password": "admin123"
+    },
+    {
+      "id": "e2e3",
+      "email": "zohaib99@gmail.com",
+      "password": "12345678"
+    },
+    {
+      "id": "983f",
+      "email": "areeshcutie@gmail.com",
+      "password": "areeshstargazer"
+    }
+  ],
+  "posts": [
+    {
+      "id": "1",
+      "title": "a title",
+      "views": 100
+    },
+    {
+      "id": "2",
+      "title": "another title",
+      "views": 200
+    }
+  ],
+  "comments": [
+    {
+      "id": "1",
+      "text": "a comment about post 1",
+      "postId": "1"
+    },
+    {
+      "id": "2",
+      "text": "another comment about post 1",
+      "postId": "1"
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  },
+  "books": [
+    {
+      "id": "3eb5",
+      "title": "Hello",
+      "author": "Areesh",
+      "year": 1901,
+      "genre": "Science Fiction",
+      "imgFile": {},
+      "imgURL": "https://firebasestorage.googleapis.com/v0/b/bookworm-a1823.appspot.com/o/images%2FMicrosoft.jpg?alt=media&token=e88d67d2-6c3b-4a17-9c5d-4666b24132aa"
+    },
+    {
+      "id": "e5c2",
+      "title": "Testing Firebase",
+      "author": "Areesh at 3 AM",
+      "year": 2024,
+      "genre": "Science Fiction",
+      "imgFile": {},
+      "imgURL": "https://firebasestorage.googleapis.com/v0/b/bookworm-a1823.appspot.com/o/images%2Fgithub_signup.png?alt=media&token=d52f9b99-3ea1-4b3e-ba8a-a258dd9f5c3b"
+    },
+    {
+      "id": "86d0",
+      "title": "test 3",
+      "author": "Areesh at 3 AM",
+      "year": 1919,
+      "genre": "Science Fiction",
+      "imgFile": {},
+      "imgURL": "https://firebasestorage.googleapis.com/v0/b/bookworm-a1823.appspot.com/o/images%2Fgithub-workflows-fork.png?alt=media&token=8dd77e3a-6a45-490b-99b8-23bb71a02e7c"
+    }
+  ]
+}

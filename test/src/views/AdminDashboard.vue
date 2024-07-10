@@ -50,6 +50,7 @@
           <thead class="bg-gray-50">
             <tr>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cover</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book Title</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
@@ -60,6 +61,9 @@
           <tbody class="bg-white divide-y divide-gray-200">
             <tr v-for="(book, index) in books" :key="book.id">
               <td class="px-6 py-4 whitespace-nowrap">{{ index + 1 }}</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+  <img :src="book.imgURL" alt="Book Image" class="h-16 w-16 object-cover"/>
+</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ book.title }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ book.year }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ book.author }}</td>
@@ -78,6 +82,7 @@
         <div class="bg-white w-full max-w-md p-8 rounded-lg shadow-lg">
           <h3 class="text-xl font-bold mb-4 text-indigo-700">Add New Book</h3>
           <form @submit.prevent="createBook">
+            <input type="file" @change="onFileChange" />
             <div class="mb-4">
               <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
               <input type="text" id="title" v-model="newBook.title" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -143,16 +148,28 @@ import { ref, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import Swal from 'sweetalert2';
 import 'animate.css';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"; // Import Firebase storage functions
 
 export default {
   name: 'AdminDashboard',
+  methods: {
+    onFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.newBook.imgFile = file;
+      }
+    }
+  },
   setup() {
     const store = useStore();
+    const storage = getStorage(); // Initialize Firebase storage
+
     const newBook = ref({
       title: '',
       author: '',
       year: '',
-      genre: ''
+      genre: '',
+      imgFile: null // Add imgFile to store the file object
     });
     const editBookData = ref({
       id: '',
@@ -174,11 +191,26 @@ export default {
     });
 
     const createBook = async () => {
-      if (newBook.value.title && newBook.value.author && newBook.value.year && newBook.value.genre) {
-        await store.dispatch('createBook', newBook.value);
-        Swal.fire('Success', 'Book added successfully', 'success');
-        newBook.value = { title: '', author: '', year: '', genre: '' };
-        showAddBookModal.value = false;
+      if (newBook.value.title && newBook.value.author && newBook.value.year && newBook.value.genre && newBook.value.imgFile) {
+        try {
+          // Upload image to Firebase Storage
+          const imageRef = storageRef(storage, `images/${newBook.value.imgFile.name}`);
+          await uploadBytes(imageRef, newBook.value.imgFile);
+          const imageUrl = await getDownloadURL(imageRef);
+
+          // Add book with image URL to the store
+          const bookData = { ...newBook.value, imgURL: imageUrl };
+          await store.dispatch('createBook', bookData);
+
+          Swal.fire('Success', 'Book added successfully', 'success');
+          newBook.value = { title: '', author: '', year: '', genre: '', imgFile: null };
+          showAddBookModal.value = false;
+        } catch (error) {
+          Swal.fire('Error', 'Failed to add book', 'error');
+          console.error("Error adding book:", error);
+        }
+      } else {
+        Swal.fire('Error', 'Please fill all fields and select an image', 'error');
       }
     };
 
