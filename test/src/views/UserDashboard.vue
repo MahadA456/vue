@@ -1,16 +1,16 @@
 <template>
   <div class="user-dashboard min-h-screen flex">
     <!-- Sidebar -->
-    <div class="w-64 bg-white shadow-lg p-6">
+    <div class="w-64 shadow-lg p-6 sidebar-bg">
       <div class="flex items-center justify-center mb-6">
         <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 rounded-full border-black border">
       </div>
-      <h2 class="text-center text-lg font-semibold mb-4">Book Worm</h2>
-      <p class="text-center text-sm text-gray-700 mb-6 tagline">Get Lost In a Good Book</p>
-      <h3 class="text-lg font-semibold mb-4">Genres</h3>
+      <h2 class="text-center text-lg font-semibold mb-4 text-white">Book Worm</h2>
+      <p class="text-center text-sm text-gray-200 mb-6 tagline">Get Lost In a Good Book</p>
+      <h3 class="text-lg font-semibold mb-4 text-white">Genres</h3>
       <ul>
         <li v-for="genre in genres" :key="genre" class="mb-2">
-          <button @click="filterByGenre(genre)" class="w-full text-left px-3 py-2 text-gray-700 hover:text-indigo-500 rounded-md">{{ genre }}</button>
+          <button @click="filterByGenre(genre)" class="transparent-btn">{{ genre }}</button>
         </li>
       </ul>
     </div>
@@ -20,7 +20,7 @@
       <!-- Header -->
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Books</h1>
-        <button @click="logout" class="btn btn-red">Logout</button>
+        <button @click="logout" class="btn transparent-btn">Logout</button>
       </div>
 
       <!-- Search Bar -->
@@ -125,6 +125,13 @@ export default {
   background-position: center;
 }
 
+.sidebar-bg {
+  background-image: url('@/assets/userbg.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
 .bg-main-content {
   background-color: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(5px);
@@ -153,6 +160,20 @@ export default {
 
 .bg-smoke-light {
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+.transparent-btn {
+  background-color: transparent; /* Makes the background transparent */
+  border: 1px solid #ffffff; /* Optional: Adds a white border */
+  color: #03c03c; /* Sets text color to green */
+  padding: 10px 20px; /* Adjust padding as needed */
+  font-size: 16px; /* Adjust font size as needed */
+  cursor: pointer; /* Shows pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+.transparent-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3); /* Light transparent white on hover */
 }
 
 @media (max-width: 640px) {
