@@ -126,9 +126,9 @@ export default {
 }
 
 .sidebar-bg {
-  background-image: url('@/assets/userbg.jpg');
-  background-size: cover;
-  background-position: center;
+  background: linear-gradient(135deg, #1a5319, #144213, #0275d8, #6c757d);
+  background-size: 400% 400%;
+  animation: gradientAnimation 10s ease infinite;
   color: white;
 }
 
@@ -144,17 +144,8 @@ export default {
   width: auto;
 }
 
-.btn-red {
-  background-color: #d9534f;
-  color: white;
-}
-
-.btn-red:hover {
-  background-color: #c9302c;
-}
-
 .tagline {
-  font-family: 'Dancing Script', cursive; /* Use the same font as the login page */
+  font-family: 'Dancing Script', cursive;
   font-size: 1.25rem;
 }
 
@@ -163,18 +154,18 @@ export default {
 }
 
 .transparent-btn {
-  background-color: transparent; /* Makes the background transparent */
-  border: 2px solid #03c03c; /* Green border */
-  color: #03c03c; /* Sets text color to green */
-  padding: 10px 20px; /* Adjust padding as needed */
-  font-size: 16px; /* Adjust font size as needed */
-  cursor: pointer; /* Shows pointer cursor on hover */
-  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition on hover */
+  background-color: transparent;
+  border: 2px solid #03c03c;
+  color: #03c03c;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .transparent-btn:hover {
-  background-color: #03c03c; /* Green background on hover */
-  color: white; /* White text color on hover */
+  background-color: #03c03c;
+  color: white;
 }
 
 @media (max-width: 640px) {
@@ -189,6 +180,18 @@ export default {
   }
   .btn {
     width: 100%;
+  }
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 </style>

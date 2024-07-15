@@ -1,29 +1,17 @@
 <template>
-  <div class="admin-dashboard min-h-screen flex">
+  <div :class="['admin-dashboard', 'min-h-screen', 'flex', { 'dark-mode': isDarkMode }]">
     <!-- Sidebar -->
-    <div :class="['w-64 bg-white shadow-lg transform transition-transform duration-300', { '-translate-x-full': !sidebarOpen }]">
-      <div class="p-6">
-        <div class="flex items-center justify-center mb-6">
-          <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 rounded-full border-black border">
-        </div>
-        <div class="flex items-center space-x-4">
-          <img src="@/assets/user-avatar.png" alt="User Avatar" class="w-12 h-12 rounded-full">
-          <div>
-            <h2 class="text-lg font-semibold">Book Worm Administration</h2>
-            <p class="text-sm text-gray-600">Admin</p>
-          </div>
+    <div :class="['w-64 shadow-lg p-6 sidebar-bg', { 'hidden': !sidebarOpen }]">
+      <div class="flex items-center justify-center mb-6">
+        <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 rounded-full border-black border">
+      </div>
+      <div class="flex items-center space-x-4">
+        <img src="@/assets/linkedinavatar.jpg" alt="User Avatar" class="w-12 h-12 rounded-full">
+        <div>
+          <h2 class="text-lg font-semibold text-white">Book Worm Administration</h2>
+          <p class="text-sm text-gray-200">Admin</p>
         </div>
       </div>
-      <nav class="mt-6">
-        <ul>
-          <li class="px-6 py-2"><a href="#" class="text-gray-700 hover:text-indigo-500">Dashboard</a></li>
-          <li class="px-6 py-2"><a href="#" class="text-gray-700 hover:text-indigo-500">Books Category</a></li>
-          <li class="px-6 py-2"><a href="#" class="text-gray-700 hover:text-indigo-500">Books Section</a></li>
-          <li class="px-6 py-2"><a href="#" class="text-gray-700 hover:text-indigo-500">Manage Sales</a></li>
-          <li class="px-6 py-2"><a href="#" class="text-gray-700 hover:text-indigo-500">Transaction History</a></li>
-          <li class="px-6 py-2"><a href="#" class="text-gray-700 hover:text-indigo-500">User Management</a></li>
-        </ul>
-      </nav>
     </div>
 
     <!-- Main Content -->
@@ -33,15 +21,16 @@
         <div>
           <button @click="sidebarOpen = !sidebarOpen" class="btn btn-gray">☰</button>
         </div>
-        <h1 class="text-2xl font-bold text-gray-800">Book Details</h1>
+        <h1 class="book-details-title">Book Details</h1>
         <div>
-          <button @click="logout" class="btn btn-red inline-block">Logout</button>
+          <button @click="toggleDarkMode" class="btn transparent-btn">Toggle Dark Mode</button>
+          <button @click="logout" class="btn transparent-btn ml-2">Logout</button>
         </div>
       </div>
 
       <!-- Add Book Button -->
       <div class="mb-6 flex justify-end">
-        <button @click="showAddBookModal = true" class="btn btn-blue">+ Add New Book</button>
+        <button @click="showAddBookModal = true" class="btn transparent-btn">+ Add New Book</button>
       </div>
 
       <!-- Books Table -->
@@ -103,7 +92,7 @@
                 <option v-for="genre in genres" :key="genre" :value="genre">{{ genre }}</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-green">Add Book</button>
+            <button type="submit" class="btn btn-blue">Add Book</button>
           </form>
           <button @click="showAddBookModal = false" class="btn btn-red mt-4">Close</button>
         </div>
@@ -134,7 +123,7 @@
                 <option v-for="genre in genres" :key="genre" :value="genre">{{ genre }}</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-green">Update Book</button>
+            <button type="submit" class="btn btn-blue">Update Book</button>
           </form>
           <button @click="editBookData.id = null" class="btn btn-red mt-4">Close</button>
         </div>
@@ -160,17 +149,12 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "fire
 
 export default {
   name: 'AdminDashboard',
-  methods: {
-    onFileChange(event) {
-      const file = event.target.files[0];
-      if (file) {
-        this.newBook.imgFile = file;
-      }
-    }
-  },
   setup() {
     const store = useStore();
     const storage = getStorage(); // Initialize Firebase storage
+
+    const sidebarOpen = ref(true); // Sidebar state
+    const isDarkMode = ref(false); // Dark mode state
 
     const newBook = ref({
       title: '',
@@ -187,7 +171,6 @@ export default {
       genre: ''
     });
     const showAddBookModal = ref(false);
-    const sidebarOpen = ref(true);
     const showImageModalFlag = ref(false);
     const currentImage = ref('');
 
@@ -251,16 +234,21 @@ export default {
       currentImage.value = '';
     };
 
+    const toggleDarkMode = () => {
+      isDarkMode.value = !isDarkMode.value;
+    };
+
     const logout = () => {
       store.dispatch('logout');
       location.reload(); // Reload to clear state and redirect to login
     };
 
     return {
+      sidebarOpen, // Return sidebar state
+      isDarkMode, // Return dark mode state
       newBook,
       editBookData,
       showAddBookModal,
-      sidebarOpen,
       books,
       years,
       genres,
@@ -272,8 +260,17 @@ export default {
       closeImageModal,
       showImageModalFlag,
       currentImage,
+      toggleDarkMode, // Return toggle dark mode function
       logout
     };
+  },
+  methods: {
+    onFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.newBook.imgFile = file;
+      }
+    }
   }
 };
 </script>
@@ -289,34 +286,18 @@ export default {
   background-position: center;
 }
 
-.admin-dashboard {
-  background-image: url('@/assets/bgimage.jpg');
+.sidebar-bg {
+  background: linear-gradient(135deg, #1a5319, #144213, #0275d8, #6c757d);
+  background-size: 400% 400%;
+  animation: gradientAnimation 10s ease infinite;
+  color: white;
 }
 
 .btn {
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   text-align: center;
-  width: 100%;
-  max-width: 200px;
-}
-
-.btn-green {
-  background-color: #1A5319;
-  color: white;
-}
-
-.btn-green:hover {
-  background-color: #144213;
-}
-
-.btn-red {
-  background-color: #d9534f;
-  color: white;
-}
-
-.btn-red:hover {
-  background-color: #c9302c;
+  width: auto;
 }
 
 .btn-blue {
@@ -328,12 +309,107 @@ export default {
   background-color: #025aa5;
 }
 
-.btn-gray {
-  background-color: #6c757d;
+.btn-red {
+  background-color: #d9534f;
   color: white;
 }
 
-.btn-gray:hover {
-  background-color: #5a6268;
+.btn-red:hover {
+  background-color: #c9302c;
+}
+
+.book-details-title {
+  font-family: 'Dancing Script', cursive;
+  font-size: 3rem;
+  color: #4caf50; /* Green color */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow for better readability */
+}
+
+.tagline {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.25rem;
+}
+
+.transparent-btn {
+  background-color: transparent;
+  border: 2px solid #03c03c;
+  color: #03c03c;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.transparent-btn:hover {
+  background-color: #03c03c;
+  color: white;
+}
+
+@media (max-width: 640px) {
+  .admin-dashboard {
+    flex-direction: column;
+  }
+  .w-64 {
+    width: 100%;
+  }
+  .flex-1 {
+    width: 100%;
+  }
+  .btn {
+    width: 100%;
+  }
+}
+
+.dark-mode {
+  background-color: #1a202c;
+  color: #cbd5e0;
+}
+
+.dark-mode .bg-main-content {
+  background-image: url('@/assets/bgimage-dark.jpg'); /* Add a dark mode background image */
+}
+
+.dark-mode .sidebar-bg {
+  background: linear-gradient(135deg, #2d3748, #1a202c);
+  color: #cbd5e0;
+}
+
+.dark-mode .btn {
+  background-color: #2d3748;
+  color: #cbd5e0;
+}
+
+.dark-mode .btn:hover {
+  background-color: #4a5568;
+}
+
+.dark-mode .btn-blue {
+  background-color: #3182ce;
+  color: white;
+}
+
+.dark-mode .btn-blue:hover {
+  background-color: #2b6cb0;
+}
+
+.dark-mode .btn-red {
+  background-color: #e53e3e;
+  color: white;
+}
+
+.dark-mode .btn-red:hover {
+  background-color: #c53030;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 </style>
