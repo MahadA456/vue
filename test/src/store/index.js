@@ -1,10 +1,11 @@
 // src/store/index.js
 import { createStore } from 'vuex';
 import axios from 'axios';
+import bcrypt from 'bcryptjs'; // Import bcryptjs
 import persistState from './persist';
 
 const ADMIN_EMAIL = 'admin@example.com'; // Admin email
-const ADMIN_PASSWORD = 'admin123'; // Admin password
+const ADMIN_PASSWORD_HASH = bcrypt.hashSync('admin123', 10); // Hashed admin password
 
 export default createStore({
   plugins: [persistState(500)], // Applying the persistState plugin with 500ms debounce
@@ -36,19 +37,26 @@ export default createStore({
   actions: {
     async login({ commit }, { email, password }) {
       try {
-        // Check if the email and password match the admin credentials
-        if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        // Check if the email matches the admin email and the password matches the hashed admin password
+        if (email === ADMIN_EMAIL && bcrypt.compareSync(password, ADMIN_PASSWORD_HASH)) {
           commit('setUser', { email, isAdmin: true });
           return true;
         }
 
         // For regular users, check the JSON server
         const response = await axios.get('http://localhost:3000/users', {
-          params: { email, password }
+          params: { email }
         });
+
         if (response.data.length > 0) {
-          commit('setUser', response.data[0]);
-          return true;
+          const user = response.data[0];
+          if (bcrypt.compareSync(password, user.password)) {
+            commit('setUser', user);
+            return true;
+          } else {
+            console.error('Login failed: Invalid credentials');
+            return false;
+          }
         } else {
           console.error('Login failed: Invalid credentials');
           return false;
@@ -75,8 +83,9 @@ export default createStore({
           return false; // Email already exists
         }
 
-        // If email does not exist, create new user
-        const user = { email, password };
+        // Hash the password before storing it
+        const hashedPassword = bcrypt.hashSync(password, 10);
+        const user = { email, password: hashedPassword };
         const response = await axios.post('http://localhost:3000/users', user);
         commit('setUser', response.data);
         return true;

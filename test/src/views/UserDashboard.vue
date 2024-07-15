@@ -164,16 +164,17 @@ export default {
 
 .transparent-btn {
   background-color: transparent; /* Makes the background transparent */
-  border: 1px solid #ffffff; /* Optional: Adds a white border */
+  border: 2px solid #03c03c; /* Green border */
   color: #03c03c; /* Sets text color to green */
   padding: 10px 20px; /* Adjust padding as needed */
   font-size: 16px; /* Adjust font size as needed */
   cursor: pointer; /* Shows pointer cursor on hover */
-  transition: background-color 0.3s ease; /* Smooth transition on hover */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition on hover */
 }
 
 .transparent-btn:hover {
-  background-color: rgba(255, 255, 255, 0.3); /* Light transparent white on hover */
+  background-color: #03c03c; /* Green background on hover */
+  color: white; /* White text color on hover */
 }
 
 @media (max-width: 640px) {

@@ -18,7 +18,7 @@
           <div class="flex items-center justify-between">
             <a href="#" class="text-sm text-gray-500 hover:underline">Forgot Password?</a>
           </div>
-          <button type="submit" class="w-full bg-login-button text-white py-2 rounded-lg hover:bg-login-button-hover transition duration-200 transform hover:scale-105">Login</button>
+          <button type="submit" class="w-full btn btn-green transform hover:scale-105">Login</button>
           <p class="mt-4 text-center text-gray-600">New to Bookworm? <router-link to="/signup" class="text-login-link hover:underline">Register Here</router-link></p>
         </form>
       </div>
@@ -83,11 +83,12 @@ export default {
   background-color: #F2F1EB; /* Custom background color */
 }
 
-.bg-login-button {
+.btn-green {
   background-color: #1A5319; /* Custom login button color */
+  color: white;
 }
 
-.bg-login-button-hover {
+.btn-green:hover {
   background-color: #144213; /* Darker shade for hover effect */
 }
 
