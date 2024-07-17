@@ -1,4 +1,3 @@
-// src/store/index.js
 import { createStore } from 'vuex';
 import axios from 'axios';
 import bcrypt from 'bcryptjs'; // Import bcryptjs
@@ -96,10 +95,10 @@ export default createStore({
     },
     logout({ commit }) {
       commit('setUser', null);
-      localStorage.removeItem('vuex-state'); // Also clear Vuex state from local storage
+      sessionStorage.removeItem('vuex-state'); // Clear Vuex state from session storage
     },
     autoLogin({ commit }) {
-      const userData = JSON.parse(localStorage.getItem('vuex-state'));
+      const userData = JSON.parse(sessionStorage.getItem('vuex-state'));
       if (userData && userData.user) {
         commit('setUser', userData.user);
       }
