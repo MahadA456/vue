@@ -21,7 +21,7 @@
         <div>
           <button @click="sidebarOpen = !sidebarOpen" class="btn btn-gray">☰</button>
         </div>
-        <h1 class="book-details-title">Book Details</h1>
+        <h1 :class="['book-details-title', { 'dark-mode-title': isDarkMode }]">Book Details</h1>
         <div>
           <button @click="toggleDarkMode" class="btn transparent-btn">Toggle Dark Mode</button>
           <button @click="logout" class="btn transparent-btn ml-2">Logout</button>
@@ -34,9 +34,9 @@
       </div>
 
       <!-- Books Table -->
-      <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+      <div :class="['overflow-x-auto shadow-md rounded-lg', { 'dark-mode-table': isDarkMode }]">
         <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+          <thead :class="[{ 'bg-gray-50': !isDarkMode, 'bg-gray-700': isDarkMode }]">
             <tr>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cover</th>
@@ -47,16 +47,16 @@
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody :class="[{ 'bg-white': !isDarkMode, 'bg-gray-800': isDarkMode, 'divide-y': true, 'divide-gray-200': true }]">
             <tr v-for="(book, index) in books" :key="book.id">
               <td class="px-6 py-4 whitespace-nowrap">{{ index + 1 }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <img :src="book.imgURL" alt="Book Image" class="h-16 w-16 object-cover cursor-pointer" @click="showImageModal(book.imgURL)" />
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">{{ book.title }}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{ book.year }}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{ book.author }}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{ book.genre }}</td>
+              <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">{{ book.title }}</td>
+              <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">{{ book.year }}</td>
+              <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">{{ book.author }}</td>
+              <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">{{ book.genre }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <button @click="editBook(book)" class="btn btn-blue">Edit</button>
                 <button @click="deleteBook(book.id)" class="btn btn-red ml-2">Delete</button>
@@ -325,6 +325,10 @@ export default {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow for better readability */
 }
 
+.dark-mode-title {
+  color: #81c784; /* Lighter green for dark mode */
+}
+
 .tagline {
   font-family: 'Dancing Script', cursive;
   font-size: 1.25rem;
@@ -399,6 +403,15 @@ export default {
 
 .dark-mode .btn-red:hover {
   background-color: #c53030;
+}
+
+.dark-mode-table {
+  background-color: #2d3748;
+  color: #cbd5e0;
+}
+
+.dark-mode-text {
+  color: #cbd5e0;
 }
 
 @keyframes gradientAnimation {
