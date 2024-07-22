@@ -1,7 +1,10 @@
 import { createStore } from 'vuex';
-import axios from 'axios';
 import bcrypt from 'bcryptjs'; // Import bcryptjs
 import persistState from './persist';
+import { auth } from '../main'; // Import the auth instance
+import { signOut } from 'firebase/auth';
+import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { db } from '../main'; // Import the Firestore instance
 
 const ADMIN_EMAIL = 'admin@example.com'; // Admin email
 const ADMIN_PASSWORD_HASH = bcrypt.hashSync('admin123', 10); // Hashed admin password
@@ -35,34 +38,18 @@ export default createStore({
   },
   actions: {
     async login({ commit }, { email, password }) {
-      try {
-        // Check if the email matches the admin email and the password matches the hashed admin password
-        if (email === ADMIN_EMAIL && bcrypt.compareSync(password, ADMIN_PASSWORD_HASH)) {
-          commit('setUser', { email, isAdmin: true });
+      if (email === ADMIN_EMAIL && bcrypt.compareSync(password, ADMIN_PASSWORD_HASH)) {
+        commit('setUser', { email, isAdmin: true });
+        return true;
+      } else {
+        try {
+          const userCredential = await auth.signInWithEmailAndPassword(email, password);
+          commit('setUser', { email: userCredential.user.email, uid: userCredential.user.uid });
           return true;
-        }
-
-        // For regular users, check the JSON server
-        const response = await axios.get('http://localhost:3000/users', {
-          params: { email }
-        });
-
-        if (response.data.length > 0) {
-          const user = response.data[0];
-          if (bcrypt.compareSync(password, user.password)) {
-            commit('setUser', user);
-            return true;
-          } else {
-            console.error('Login failed: Invalid credentials');
-            return false;
-          }
-        } else {
-          console.error('Login failed: Invalid credentials');
+        } catch (error) {
+          console.error('Login error:', error);
           return false;
         }
-      } catch (error) {
-        console.error('Login error:', error);
-        return false;
       }
     },
     async registerUser({ commit }, { email, password, confirmPassword }) {
@@ -72,30 +59,24 @@ export default createStore({
       }
 
       try {
-        // Check if the email already exists
-        const existingUserResponse = await axios.get('http://localhost:3000/users', {
-          params: { email }
-        });
-
-        if (existingUserResponse.data.length > 0) {
-          console.error('Signup error: Email already registered');
-          return false; // Email already exists
-        }
-
-        // Hash the password before storing it
-        const hashedPassword = bcrypt.hashSync(password, 10);
-        const user = { email, password: hashedPassword };
-        const response = await axios.post('http://localhost:3000/users', user);
-        commit('setUser', response.data);
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        commit('setUser', { email: userCredential.user.email, uid: userCredential.user.uid });
         return true;
       } catch (error) {
         console.error('Signup error:', error);
         return false;
       }
     },
-    logout({ commit }) {
-      commit('setUser', null);
-      sessionStorage.removeItem('vuex-state'); // Clear Vuex state from session storage
+    async logout({ commit }) {
+      try {
+        await signOut(auth);
+        commit('setUser', null);
+        sessionStorage.removeItem('vuex-state'); // Clear Vuex state from session storage
+        return true;
+      } catch (error) {
+        console.error('Logout error:', error);
+        return false;
+      }
     },
     autoLogin({ commit }) {
       const userData = JSON.parse(sessionStorage.getItem('vuex-state'));
@@ -105,41 +86,34 @@ export default createStore({
     },
     async fetchBooks({ commit }) {
       try {
-        const response = await axios.get('http://localhost:3000/books');
-        commit('setBooks', response.data);
-      } catch (error) {
-        console.error('Failed to fetch books:', error);
-      }
-    },
-    async fetchBooksByGenre({ commit }, genre) {
-      try {
-        const response = await axios.get('http://localhost:3000/books', {
-          params: { genre }
-        });
-        commit('setBooks', response.data);
+        const querySnapshot = await getDocs(collection(db, 'books'));
+        const books = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        commit('setBooks', books);
       } catch (error) {
         console.error('Failed to fetch books:', error);
       }
     },
     async createBook({ commit }, book) {
       try {
-        const response = await axios.post('http://localhost:3000/books', book);
-        commit('addBook', response.data);
+        const docRef = await addDoc(collection(db, 'books'), book);
+        const newBook = { id: docRef.id, ...book };
+        commit('addBook', newBook);
       } catch (error) {
         console.error('Failed to create book:', error);
       }
     },
     async updateBook({ commit }, book) {
       try {
-        const response = await axios.put(`http://localhost:3000/books/${book.id}`, book);
-        commit('updateBook', response.data);
+        const bookRef = doc(db, 'books', book.id);
+        await updateDoc(bookRef, book);
+        commit('updateBook', book);
       } catch (error) {
         console.error('Failed to update book:', error);
       }
     },
     async deleteBook({ commit }, bookId) {
       try {
-        await axios.delete(`http://localhost:3000/books/${bookId}`);
+        await deleteDoc(doc(db, 'books', bookId));
         commit('deleteBook', bookId);
       } catch (error) {
         console.error('Failed to delete book:', error);

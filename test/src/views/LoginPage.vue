@@ -1,12 +1,12 @@
 <template>
   <div class="login-page min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md p-5">
-      <div class="bg-custom rounded-lg shadow-lg p-6 animate__animated animate__fadeInDown">
-        <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 mx-auto mb-2 rounded-full border-black border animate__animated animate__bounceIn">
-        <p class="tagline text-center mb-6 text-gray-700 animate__animated animate__fadeIn">Get Lost In a Good Book</p>
-        <h1 class="text-2xl text-center font-semibold mb-6 text-gray-800 animate__animated animate__fadeIn">Login</h1>
+      <div class="bg-custom rounded-lg shadow-lg p-6 animate_animated animate_fadeInDown">
+        <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 mx-auto mb-2 rounded-full border-black border animate_animated animate_bounceIn">
+        <p class="tagline text-center mb-6 text-gray-700 animate_animated animate_fadeIn">Get Lost In a Good Book</p>
+        <h1 class="text-2xl text-center font-semibold mb-6 text-gray-800 animate_animated animate_fadeIn">Login</h1>
         <p class="text-center mb-6 text-gray-500">Welcome onboard with us!</p>
-        <form @submit.prevent="performLogin" class="space-y-4 animate__animated animate__fadeInUp">
+        <form @submit.prevent="performLogin" class="space-y-4 animate_animated animate_fadeInUp">
           <div class="mb-4">
             <label for="email" class="block text-gray-700 font-medium mb-2">Email address</label>
             <input type="email" id="email" v-model="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
@@ -27,9 +27,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
+import { ref, inject } from 'vue';
 import Swal from 'sweetalert2';
 import '../assets/tailwind.css';
 import 'animate.css'; // Import animate.css for animations
@@ -37,38 +35,29 @@ import 'animate.css'; // Import animate.css for animations
 export default {
   name: 'LoginPage',
   setup() {
-    const store = useStore();
-    const router = useRouter();
+    const authService = inject('authService');
     const email = ref('');
     const password = ref('');
 
-    const performLogin = async () => {
-      try {
-        const success = await store.dispatch('login', { email: email.value, password: password.value });
-        if (success) {
-          const currentUser = store.getters.currentUser;
+    const performLogin = () => {
+      authService.send({ type: 'LOGIN', email: email.value, password: password.value });
+      authService.onTransition((state) => {
+        if (state.matches('authenticated')) {
           Swal.fire('Success', 'Login successful', 'success');
-          if (currentUser.isAdmin) {
-            router.push('/admin');
-          } else {
-            router.push('/user'); // Redirect to UserDashboard
-          }
-        } else {
-          Swal.fire('Error', 'Invalid credentials or an error occurred.', 'error');
+          this.$router.push('/userdashboard');
+        } else if (state.context.error) {
+          Swal.fire('Error', state.context.error, 'error');
         }
-      } catch (error) {
-        console.error('Login error:', error);
-        Swal.fire('Error', 'Invalid credentials or an error occurred.', 'error');
-      }
+      });
     };
 
     return {
       email,
       password,
-      performLogin
+      performLogin,
     };
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -80,20 +69,20 @@ export default {
 }
 
 .bg-custom {
-  background-color: #F2F1EB; /* Custom background color */
+  background-color: #F2F1EB;
 }
 
 .btn-green {
-  background-color: #1A5319; /* Custom login button color */
+  background-color: #1A5319;
   color: white;
 }
 
 .btn-green:hover {
-  background-color: #144213; /* Darker shade for hover effect */
+  background-color: #144213;
 }
 
 .text-login-link {
-  color: #1A5319; /* Custom link color */
+  color: #1A5319;
 }
 
 .tagline {
@@ -105,7 +94,6 @@ img {
   border: 2px solid black;
 }
 
-/* Responsive Design */
 @media (max-width: 640px) {
   .login-page {
     padding: 1rem;

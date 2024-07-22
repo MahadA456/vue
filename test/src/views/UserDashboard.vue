@@ -35,9 +35,9 @@
           <div v-for="book in filteredBooks" :key="book.id" :class="['bg-white p-4 rounded-lg shadow-lg', { 'dark-mode-book': isDarkMode }]">
             <img :src="book.imgURL" alt="Book Image" class="h-32 w-full object-cover mb-4 rounded-lg cursor-pointer" @click="showImageModal(book.imgURL)">
             <h3 :class="['text-lg font-semibold', { 'text-gray-800': !isDarkMode, 'text-gray-200': isDarkMode }]">{{ book.title }}</h3>
-            <p class="text-gray-600">Author: {{ book.author }}</p>
-            <p class="text-gray-600">Year: {{ book.year }}</p>
-            <p class="text-gray-600">Genre: {{ book.genre }}</p>
+            <p :class="['text-gray-600', { 'text-gray-400': isDarkMode }]">Author: {{ book.author }}</p>
+            <p :class="['text-gray-600', { 'text-gray-400': isDarkMode }]">Year: {{ book.year }}</p>
+            <p :class="['text-gray-600', { 'text-gray-400': isDarkMode }]">Genre: {{ book.genre }}</p>
           </div>
         </div>
       </div>
@@ -226,5 +226,14 @@ export default {
 
 .book-details {
   color: inherit; /* This ensures that the text color is inherited based on the mode */
+}
+
+.dark-mode .book-details {
+  color: #e0e0e0;
+}
+
+.dark-mode .bg-main-content {
+  background-color: rgba(18, 18, 18, 0.8);
+  backdrop-filter: blur(5px);
 }
 </style>

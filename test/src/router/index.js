@@ -36,7 +36,7 @@ const routes = [
     meta: { requiresAuth: true }  // Requires user to be authenticated
   },
   {
-    path: '/user',
+    path: '/userdashboard',
     name: 'UserDashboard',
     component: UserDashboard,
     meta: { requiresAuth: true }  // Requires user to be authenticated
@@ -59,7 +59,7 @@ router.beforeEach((to, from, next) => {
     if (currentUser.isAdmin) {
       next('/admin');
     } else {
-      next('/user');  // Redirect to UserDashboard if logged in as user
+      next('/userdashboard');  // Redirect to UserDashboard if logged in as user
     }
   } else {
     next();

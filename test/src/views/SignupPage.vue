@@ -1,11 +1,15 @@
 <template>
   <div class="signup-page min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md p-5">
-      <div class="bg-custom rounded-lg shadow-lg p-6 animate__animated animate__fadeInDown">
-        <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 mx-auto mb-2 rounded-full border-black border animate__animated animate__bounceIn">
-        <p class="tagline text-center mb-6 text-gray-700 animate__animated animate__fadeIn">Get Lost In a Good Book</p>
-        <h1 class="text-2xl text-center font-semibold mb-6 text-gray-800 animate__animated animate__fadeIn">Sign Up</h1>
-        <form @submit.prevent="performSignup" class="space-y-4 animate__animated animate__fadeInUp">
+      <div class="bg-custom rounded-lg shadow-lg p-6 animate_animated animate_fadeInDown">
+        <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 mx-auto mb-2 rounded-full border-black border animate_animated animate_bounceIn">
+        <p class="tagline text-center mb-6 text-gray-700 animate_animated animate_fadeIn">Get Lost In a Good Book</p>
+        <h1 class="text-2xl text-center font-semibold mb-6 text-gray-800 animate_animated animate_fadeIn">Sign Up</h1>
+        <form @submit.prevent="performSignup" class="space-y-4 animate_animated animate_fadeInUp">
+          <div class="mb-4">
+            <label for="username" class="block text-gray-700 font-medium mb-2">User Name</label>
+            <input type="text" id="username" v-model="username" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
+          </div>
           <div class="mb-4">
             <label for="email" class="block text-gray-700 font-medium mb-2">Email address</label>
             <input type="email" id="email" v-model="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
@@ -18,6 +22,7 @@
             <label for="confirmPassword" class="block text-gray-700 font-medium mb-2">Confirm Password</label>
             <input type="password" id="confirmPassword" v-model="confirmPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
           </div>
+          <div v-if="errorShow" class="error">{{ errorMsg }}</div>
           <button type="submit" class="w-full bg-signup-button text-white py-2 rounded-lg hover:bg-signup-button-hover transition duration-200 transform hover:scale-105">Sign Up</button>
           <p class="mt-4 text-center text-gray-600">Already have an account? <router-link to="/login" class="text-signup-link hover:underline">Login Here</router-link></p>
         </form>
@@ -27,9 +32,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
+import { ref, inject } from 'vue';
 import Swal from 'sweetalert2';
 import '../assets/tailwind.css';
 import 'animate.css'; // Import animate.css for animations
@@ -37,40 +40,45 @@ import 'animate.css'; // Import animate.css for animations
 export default {
   name: 'SignupPage',
   setup() {
-    const store = useStore();
-    const router = useRouter();
+    const authService = inject('authService');
+    const username = ref('');
     const email = ref('');
     const password = ref('');
     const confirmPassword = ref('');
+    const errorMsg = ref('');
+    const errorShow = ref(false);
 
-    const performSignup = async () => {
+    const performSignup = () => {
       if (password.value !== confirmPassword.value) {
-        Swal.fire('Error', 'Passwords do not match', 'error');
+        errorMsg.value = 'Passwords do not match';
+        errorShow.value = true;
         return;
       }
 
-      try {
-        const success = await store.dispatch('registerUser', { email: email.value, password: password.value, confirmPassword: confirmPassword.value });
-        if (success) {
+      authService.send({ type: 'REGISTER', email: email.value, password: password.value });
+      authService.onTransition((state) => {
+        if (state.matches('authenticated')) {
           Swal.fire('Success', 'Signup successful. Please login.', 'success');
-          router.push('/login');
-        } else {
-          Swal.fire('Error', 'Email already registered. Please use a different email.', 'error');
+          this.$router.push('/login');
+        } else if (state.context.error) {
+          errorMsg.value = state.context.error;
+          errorShow.value = true;
+          Swal.fire('Error', state.context.error, 'error');
         }
-      } catch (error) {
-        console.error('Signup error:', error);
-        Swal.fire('Error', 'An error occurred. Please try again.', 'error');
-      }
+      });
     };
 
     return {
+      username,
       email,
       password,
       confirmPassword,
-      performSignup
+      errorMsg,
+      errorShow,
+      performSignup,
     };
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -82,19 +90,19 @@ export default {
 }
 
 .bg-custom {
-  background-color: #F2F1EB; /* Custom background color */
+  background-color: #F2F1EB;
 }
 
 .bg-signup-button {
-  background-color: #1A5319; /* Custom signup button color */
+  background-color: #1A5319;
 }
 
 .bg-signup-button-hover {
-  background-color: #144213; /* Darker shade for hover effect */
+  background-color: #144213;
 }
 
 .text-signup-link {
-  color: #1A5319; /* Custom link color */
+  color: #1A5319;
 }
 
 .tagline {
@@ -106,7 +114,6 @@ img {
   border: 2px solid black;
 }
 
-/* Responsive Design */
 @media (max-width: 640px) {
   .signup-page {
     padding: 1rem;
