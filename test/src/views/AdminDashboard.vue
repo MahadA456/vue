@@ -141,16 +141,16 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
-import { useStore } from 'vuex';
+import { ref, inject, onMounted } from 'vue';
 import Swal from 'sweetalert2';
 import 'animate.css';
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"; // Import Firebase storage functions
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'; // Import Firebase storage functions
 
 export default {
   name: 'AdminDashboard',
   setup() {
-    const store = useStore();
+    const booksService = inject('booksService');
+    const authService = inject('authService');
     const storage = getStorage(); // Initialize Firebase storage
 
     const sidebarOpen = ref(true); // Sidebar state
@@ -174,13 +174,20 @@ export default {
     const showImageModalFlag = ref(false);
     const currentImage = ref('');
 
-    const books = computed(() => store.getters.allBooks);
+    const books = ref([]);
 
     const years = Array.from({ length: 2024 - 1900 + 1 }, (_, i) => 1900 + i); // Array of years from 1900 to 2024
     const genres = ['Fiction', 'Non-fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Biography']; // Example genres
 
     onMounted(() => {
-      store.dispatch('fetchBooks');
+      booksService.send('FETCH');
+      booksService.onTransition((state) => {
+        if (state.matches('idle')) {
+          books.value = state.context.books;
+        } else if (state.context.error) {
+          Swal.fire('Error', state.context.error, 'error');
+        }
+      });
     });
 
     const createBook = async () => {
@@ -193,14 +200,14 @@ export default {
 
           // Add book with image URL to the store
           const bookData = { ...newBook.value, imgURL: imageUrl };
-          await store.dispatch('createBook', bookData);
+          booksService.send({ type: 'ADD', book: bookData });
 
           Swal.fire('Success', 'Book added successfully', 'success');
           newBook.value = { title: '', author: '', year: '', genre: '', imgFile: null };
           showAddBookModal.value = false;
         } catch (error) {
           Swal.fire('Error', 'Failed to add book', 'error');
-          console.error("Error adding book:", error);
+          console.error('Error adding book:', error);
         }
       } else {
         Swal.fire('Error', 'Please fill all fields and select an image', 'error');
@@ -213,14 +220,14 @@ export default {
 
     const updateBook = async () => {
       if (editBookData.value.title && editBookData.value.author && editBookData.value.year && editBookData.value.genre) {
-        await store.dispatch('updateBook', editBookData.value);
+        booksService.send({ type: 'UPDATE', book: editBookData.value });
         editBookData.value = { id: '', title: '', author: '', year: '', genre: '' };
         Swal.fire('Success', 'Book updated successfully', 'success');
       }
     };
 
     const deleteBook = async (bookId) => {
-      await store.dispatch('deleteBook', bookId);
+      booksService.send({ type: 'DELETE', bookId });
       Swal.fire('Deleted', 'Book deleted successfully', 'success');
     };
 
@@ -239,7 +246,7 @@ export default {
     };
 
     const logout = () => {
-      store.dispatch('logout');
+      authService.send('LOGOUT');
       location.reload(); // Reload to clear state and redirect to login
     };
 
