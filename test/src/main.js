@@ -2,6 +2,7 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
+import store from './store';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import './assets/main.css';
@@ -12,8 +13,8 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 import { interpret } from 'xstate';
-import authMachine from './authMachine';
-import booksMachine from './booksMachine';
+import authMachine from './fsm/authMachine'; 
+import booksMachine from './fsm/booksMachine'; 
 
 const firebaseConfig = {
   apiKey: "AIzaSyCbfJt9Po1C1j9C8F_D08zJhy4-v5SzDKw",
@@ -34,6 +35,7 @@ const booksService = interpret(booksMachine).start();
 
 const app = createApp(App);
 app.use(router);
+app.use(store);  // Make sure to use the Vuex store
 app.provide('authService', authService);
 app.provide('booksService', booksService);
 app.mount('#app');

@@ -1,6 +1,6 @@
 // authMachine.js
 import { createMachine, assign } from 'xstate';
-import { auth } from './main';
+import { auth } from '../main'; // Adjusted the import path to navigate correctly
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
 const authMachine = createMachine({
@@ -21,7 +21,8 @@ const authMachine = createMachine({
     loggingIn: {
       invoke: {
         id: 'login',
-        src: (context, event) => signInWithEmailAndPassword(auth, event.email, event.password),
+        src: (context, event) =>
+          signInWithEmailAndPassword(auth, event.email, event.password),
         onDone: {
           target: 'authenticated',
           actions: assign({ user: (context, event) => event.data.user }),
@@ -35,7 +36,8 @@ const authMachine = createMachine({
     registering: {
       invoke: {
         id: 'register',
-        src: (context, event) => createUserWithEmailAndPassword(auth, event.email, event.password),
+        src: (context, event) =>
+          createUserWithEmailAndPassword(auth, event.email, event.password),
         onDone: {
           target: 'authenticated',
           actions: assign({ user: (context, event) => event.data.user }),

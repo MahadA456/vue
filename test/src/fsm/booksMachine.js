@@ -1,7 +1,6 @@
-// booksMachine.js
 import { createMachine, assign } from 'xstate';
 import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
-import { db } from './main';
+import { db } from '../main'; // Adjusted the import path to navigate correctly
 
 const booksMachine = createMachine({
   id: 'books',
