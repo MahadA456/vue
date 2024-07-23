@@ -54,14 +54,14 @@
 </template>
 
 <script>
-import { ref, inject, onMounted } from 'vue';
+import { ref } from 'vue';
+import { useStore } from 'vuex';
 import Swal from 'sweetalert2';
 
 export default {
   name: 'UserDashboard',
   setup() {
-    const booksService = inject('booksService');
-    const authService = inject('authService');
+    const store = useStore();
     const searchQuery = ref('');
     const filteredBooks = ref([]);
     const genres = ref([]);
@@ -70,17 +70,12 @@ export default {
     const currentImage = ref('');
     const isDarkMode = ref(false);
 
-    onMounted(() => {
-      booksService.send('FETCH');
-      booksService.onTransition((state) => {
-        if (state.matches('idle')) {
-          books.value = state.context.books;
-          genres.value = [...new Set(state.context.books.map((book) => book.genre))];
-          filteredBooks.value = books.value;
-        } else if (state.context.error) {
-          Swal.fire('Error', state.context.error, 'error');
-        }
-      });
+    store.dispatch('fetchBooks').then(() => {
+      books.value = store.state.books;
+      genres.value = [...new Set(store.state.books.map((book) => book.genre))];
+      filteredBooks.value = books.value;
+    }).catch((error) => {
+      Swal.fire('Error', error.message, 'error');
     });
 
     const filterByGenre = (genre) => {
@@ -112,8 +107,9 @@ export default {
     };
 
     const logout = () => {
-      authService.send('LOGOUT');
-      location.reload(); // Reload to clear state and redirect to login
+      store.dispatch('logout').then(() => {
+        location.reload(); // Reload to clear state and redirect to login
+      });
     };
 
     return {

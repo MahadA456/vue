@@ -2,7 +2,7 @@ import { createStore } from 'vuex';
 import bcrypt from 'bcryptjs'; // Import bcryptjs
 import persistState from './persist';
 import { auth } from '../main'; // Import the auth instance
-import { signOut } from 'firebase/auth';
+import { signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../main'; // Import the Firestore instance
 
@@ -43,7 +43,7 @@ export default createStore({
         return true;
       } else {
         try {
-          const userCredential = await auth.signInWithEmailAndPassword(email, password);
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
           commit('setUser', { email: userCredential.user.email, uid: userCredential.user.uid });
           return true;
         } catch (error) {
@@ -59,7 +59,7 @@ export default createStore({
       }
 
       try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         commit('setUser', { email: userCredential.user.email, uid: userCredential.user.uid });
         return true;
       } catch (error) {

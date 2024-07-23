@@ -141,7 +141,8 @@
 </template>
 
 <script>
-import { ref, inject, onMounted } from 'vue';
+import { ref } from 'vue';
+import { useStore } from 'vuex';
 import Swal from 'sweetalert2';
 import 'animate.css';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'; // Import Firebase storage functions
@@ -149,8 +150,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'fire
 export default {
   name: 'AdminDashboard',
   setup() {
-    const booksService = inject('booksService');
-    const authService = inject('authService');
+    const store = useStore();
     const storage = getStorage(); // Initialize Firebase storage
 
     const sidebarOpen = ref(true); // Sidebar state
@@ -179,15 +179,10 @@ export default {
     const years = Array.from({ length: 2024 - 1900 + 1 }, (_, i) => 1900 + i); // Array of years from 1900 to 2024
     const genres = ['Fiction', 'Non-fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Biography']; // Example genres
 
-    onMounted(() => {
-      booksService.send('FETCH');
-      booksService.onTransition((state) => {
-        if (state.matches('idle')) {
-          books.value = state.context.books;
-        } else if (state.context.error) {
-          Swal.fire('Error', state.context.error, 'error');
-        }
-      });
+    store.dispatch('fetchBooks').then(() => {
+      books.value = store.state.books;
+    }).catch((error) => {
+      Swal.fire('Error', error.message, 'error');
     });
 
     const createBook = async () => {
@@ -200,7 +195,7 @@ export default {
 
           // Add book with image URL to the store
           const bookData = { ...newBook.value, imgURL: imageUrl };
-          booksService.send({ type: 'ADD', book: bookData });
+          await store.dispatch('createBook', bookData);
 
           Swal.fire('Success', 'Book added successfully', 'success');
           newBook.value = { title: '', author: '', year: '', genre: '', imgFile: null };
@@ -220,14 +215,14 @@ export default {
 
     const updateBook = async () => {
       if (editBookData.value.title && editBookData.value.author && editBookData.value.year && editBookData.value.genre) {
-        booksService.send({ type: 'UPDATE', book: editBookData.value });
+        await store.dispatch('updateBook', editBookData.value);
         editBookData.value = { id: '', title: '', author: '', year: '', genre: '' };
         Swal.fire('Success', 'Book updated successfully', 'success');
       }
     };
 
     const deleteBook = async (bookId) => {
-      booksService.send({ type: 'DELETE', bookId });
+      await store.dispatch('deleteBook', bookId);
       Swal.fire('Deleted', 'Book deleted successfully', 'success');
     };
 
@@ -246,8 +241,9 @@ export default {
     };
 
     const logout = () => {
-      authService.send('LOGOUT');
-      location.reload(); // Reload to clear state and redirect to login
+      store.dispatch('logout').then(() => {
+        location.reload(); // Reload to clear state and redirect to login
+      });
     };
 
     return {

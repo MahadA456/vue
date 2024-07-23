@@ -1,4 +1,3 @@
-// main.js
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
@@ -12,10 +11,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-import { interpret } from 'xstate';
-import authMachine from './fsm/authMachine'; 
-import booksMachine from './fsm/booksMachine'; 
-
+// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCbfJt9Po1C1j9C8F_D08zJhy4-v5SzDKw",
   authDomain: "bookwormog-41351.firebaseapp.com",
@@ -25,17 +21,13 @@ const firebaseConfig = {
   appId: "1:11176025974:web:c4197108a4346a16ee2457",
   measurementId: "G-W7BND35K47"
 };
+
 // Initialize Firebase
 const appFirebase = initializeApp(firebaseConfig);
-export const auth = getAuth(appFirebase);
-export const db = getFirestore(appFirebase);
-
-const authService = interpret(authMachine).start();
-const booksService = interpret(booksMachine).start();
+export const auth = getAuth(appFirebase); // Export the auth instance
+export const db = getFirestore(appFirebase); // Export the Firestore instance
 
 const app = createApp(App);
 app.use(router);
-app.use(store);  // Make sure to use the Vuex store
-app.provide('authService', authService);
-app.provide('booksService', booksService);
+app.use(store);
 app.mount('#app');

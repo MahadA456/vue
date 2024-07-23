@@ -1,11 +1,11 @@
 <template>
   <div class="signup-page min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md p-5">
-      <div class="bg-custom rounded-lg shadow-lg p-6 animate_animated animate_fadeInDown">
-        <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 mx-auto mb-2 rounded-full border-black border animate_animated animate_bounceIn">
-        <p class="tagline text-center mb-6 text-gray-700 animate_animated animate_fadeIn">Get Lost In a Good Book</p>
-        <h1 class="text-2xl text-center font-semibold mb-6 text-gray-800 animate_animated animate_fadeIn">Sign Up</h1>
-        <form @submit.prevent="performSignup" class="space-y-4 animate_animated animate_fadeInUp">
+      <div class="bg-custom rounded-lg shadow-lg p-6 animate__animated animate__fadeInDown">
+        <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 mx-auto mb-2 rounded-full border-black border animate__animated animate__bounceIn">
+        <p class="tagline text-center mb-6 text-gray-700 animate__animated animate__fadeIn">Get Lost In a Good Book</p>
+        <h1 class="text-2xl text-center font-semibold mb-6 text-gray-800 animate__animated animate__fadeIn">Sign Up</h1>
+        <form @submit.prevent="performSignup" class="space-y-4 animate__animated animate__fadeInUp">
           <div class="mb-4">
             <label for="username" class="block text-gray-700 font-medium mb-2">User Name</label>
             <input type="text" id="username" v-model="username" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
@@ -32,7 +32,9 @@
 </template>
 
 <script>
-import { ref, inject } from 'vue';
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
 import '../assets/tailwind.css';
 import 'animate.css'; // Import animate.css for animations
@@ -40,7 +42,8 @@ import 'animate.css'; // Import animate.css for animations
 export default {
   name: 'SignupPage',
   setup() {
-    const authService = inject('authService');
+    const store = useStore();
+    const router = useRouter();
     const username = ref('');
     const email = ref('');
     const password = ref('');
@@ -48,24 +51,27 @@ export default {
     const errorMsg = ref('');
     const errorShow = ref(false);
 
-    const performSignup = () => {
+    const performSignup = async () => {
       if (password.value !== confirmPassword.value) {
         errorMsg.value = 'Passwords do not match';
         errorShow.value = true;
         return;
       }
 
-      authService.send({ type: 'REGISTER', email: email.value, password: password.value });
-      authService.onTransition((state) => {
-        if (state.matches('authenticated')) {
+      try {
+        const success = await store.dispatch('registerUser', { email: email.value, password: password.value, confirmPassword: confirmPassword.value });
+        if (success) {
           Swal.fire('Success', 'Signup successful. Please login.', 'success');
-          this.$router.push('/login');
-        } else if (state.context.error) {
-          errorMsg.value = state.context.error;
+          router.push('/login');
+        } else {
+          errorMsg.value = 'Signup failed. Please try again.';
           errorShow.value = true;
-          Swal.fire('Error', state.context.error, 'error');
         }
-      });
+      } catch (error) {
+        console.error('Signup error:', error);
+        errorMsg.value = 'An error occurred. Please try again.';
+        errorShow.value = true;
+      }
     };
 
     return {
