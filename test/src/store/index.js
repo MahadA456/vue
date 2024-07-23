@@ -94,8 +94,16 @@ export default createStore({
       }
     },
     async createBook({ commit }, book) {
+      console.log(book)
+      const bookdata={author:book.author,
+        genre:book.genre,
+        title:book.title,
+        imgURL:book.imgURL,
+        year:book.year
+      
+      };
       try {
-        const docRef = await addDoc(collection(db, 'books'), book);
+        const docRef = await addDoc(collection(db, 'books'), bookdata);
         const newBook = { id: docRef.id, ...book };
         commit('addBook', newBook);
       } catch (error) {
