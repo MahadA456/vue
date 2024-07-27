@@ -13,8 +13,8 @@ export const bookMachine = Machine({
   states: {
     idle: {
       on: {
-        LOGIN: "authenticating"
-       
+        LOGIN: 'authenticating',
+        REGISTER: 'registering'
       }
     },
     authenticating: {
@@ -30,14 +30,14 @@ export const bookMachine = Machine({
         onError: {
           target: 'error',
           actions: assign({
-            error: (context, event) => event.data
+            error: (context, event) => event.data.message
           })
         }
       }
     },
     registering: {
       invoke: {
-        id: 'register',
+        id: 'registerUser',
         src: (context, event) => registerUser(event.data),
         onDone: {
           target: 'authenticated',
@@ -48,7 +48,7 @@ export const bookMachine = Machine({
         onError: {
           target: 'error',
           actions: assign({
-            error: (context, event) => event.data
+            error: (context, event) => event.data.message
           })
         }
       }
@@ -75,7 +75,7 @@ export const bookMachine = Machine({
         onError: {
           target: 'error',
           actions: assign({
-            error: (context, event) => event.data
+            error: (context, event) => event.data.message
           })
         }
       }
@@ -93,7 +93,7 @@ export const bookMachine = Machine({
         onError: {
           target: 'error',
           actions: assign({
-            error: (context, event) => event.data
+            error: (context, event) => event.data.message
           })
         }
       }
@@ -111,7 +111,7 @@ export const bookMachine = Machine({
         onError: {
           target: 'error',
           actions: assign({
-            error: (context, event) => event.data
+            error: (context, event) => event.data.message
           })
         }
       }
@@ -129,7 +129,7 @@ export const bookMachine = Machine({
         onError: {
           target: 'error',
           actions: assign({
-            error: (context, event) => event.data
+            error: (context, event) => event.data.message
           })
         }
       }
@@ -147,7 +147,7 @@ export const bookMachine = Machine({
         onError: {
           target: 'error',
           actions: assign({
-            error: (context, event) => event.data
+            error: (context, event) => event.data.message
           })
         }
       }

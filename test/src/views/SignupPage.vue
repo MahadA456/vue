@@ -7,10 +7,6 @@
         <h1 class="text-2xl text-center font-semibold mb-6 text-gray-800 animate__animated animate__fadeIn">Sign Up</h1>
         <form @submit.prevent="performSignup" class="space-y-4 animate__animated animate__fadeInUp">
           <div class="mb-4">
-            <label for="username" class="block text-gray-700 font-medium mb-2">User Name</label>
-            <input type="text" id="username" v-model="username" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
-          </div>
-          <div class="mb-4">
             <label for="email" class="block text-gray-700 font-medium mb-2">Email address</label>
             <input type="email" id="email" v-model="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
           </div>
@@ -35,45 +31,37 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
-import { interpret } from 'xstate';
-import { bookMachine } from '../state/bookMachine';
-import '../assets/tailwind.css';
-import 'animate.css'; // Import animate.css for animations
+import { registerUser } from '../state/services';
 
 export default {
   name: 'SignupPage',
   setup() {
     const router = useRouter();
-    const username = ref('');
     const email = ref('');
     const password = ref('');
     const confirmPassword = ref('');
     const errorMsg = ref('');
     const errorShow = ref(false);
-    const bookService = interpret(bookMachine).start();
 
-    const performSignup = () => {
+    const performSignup = async () => {
       if (password.value !== confirmPassword.value) {
         errorMsg.value = 'Passwords do not match';
         errorShow.value = true;
         return;
       }
 
-      bookService.send({ type: 'REGISTER', data: { email: email.value, password: password.value } });
-      bookService.onTransition((state) => {
-        if (state.matches('authenticated')) {
-          Swal.fire('Success', 'Signup successful. Please login.', 'success');
-          router.push('/login');
-        } else if (state.matches('error')) {
-          errorMsg.value = state.context.error;
-          errorShow.value = true;
-          Swal.fire('Error', state.context.error, 'error');
-        }
-      });
+      try {
+        await registerUser({ email: email.value, password: password.value });
+        Swal.fire('Success', 'Signup successful. Please login.', 'success');
+        router.push('/login');
+      } catch (error) {
+        errorMsg.value = error.message;
+        errorShow.value = true;
+        Swal.fire('Error', error.message, 'error');
+      }
     };
 
     return {
-      username,
       email,
       password,
       confirmPassword,
@@ -92,32 +80,25 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
 }
-
 .bg-custom {
   background-color: #F2F1EB;
 }
-
 .bg-signup-button {
   background-color: #1A5319;
 }
-
 .bg-signup-button-hover {
   background-color: #144213;
 }
-
 .text-signup-link {
   color: #1A5319;
 }
-
 .tagline {
   font-family: 'Dancing Script', cursive;
   font-size: 1.25rem;
 }
-
 img {
   border: 2px solid black;
 }
-
 @media (max-width: 640px) {
   .signup-page {
     padding: 1rem;

@@ -43,10 +43,15 @@ export default {
     const router = useRouter();
     const bookService = interpret(bookMachine)
       .onTransition((state) => {
+        console.log('Current state:', state.value);
+        console.log('Context:', state.context);
         if (state.matches('authenticated')) {
           Swal.fire('Success', 'Login successful', 'success');
           const currentUser = state.context.user;
-          if (currentUser && currentUser.isAdmin) {
+          console.log('Routing to appropriate dashboard');
+          console.log(currentUser)
+          if ( currentUser.isAdmin) {
+            console.log('redirected to admin')
             router.push('/admin');
           } else {
             router.push('/userdashboard');
@@ -58,6 +63,7 @@ export default {
       .start();
 
     const performLogin = () => {
+      console.log('Attempting login');
       bookService.send({ type: 'LOGIN', data: { email: email.value, password: password.value } });
     };
 

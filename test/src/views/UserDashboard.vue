@@ -76,7 +76,6 @@ export default {
 
     bookService.send({ type: 'FETCH_BOOKS' });
     bookService.onTransition((state) => {
-      console.log(state)
       if (state.matches('authenticated')) {
         books.value = state.context.books;
         genres.value = [...new Set(state.context.books.map((book) => book.genre))];

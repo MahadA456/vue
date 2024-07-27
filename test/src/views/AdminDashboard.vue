@@ -1,5 +1,5 @@
 <template>
-  <div :class="['admin-dashboard', 'min-h-screen', 'flex', { 'dark-mode': isDarkMode }]">
+  <div :class="['admin-dashboard', 'min-h-screen flex', { 'dark-mode': isDarkMode }]">
     <!-- Sidebar -->
     <div :class="['w-64 shadow-lg p-6 sidebar-bg', { 'hidden': !sidebarOpen }]">
       <div class="flex items-center justify-center mb-6">
