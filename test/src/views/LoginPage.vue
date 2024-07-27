@@ -28,38 +28,37 @@
 
 <script>
 import { ref } from 'vue';
-import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
+import { interpret } from 'xstate';
+import { bookMachine } from '../state/bookMachine';
 import '../assets/tailwind.css';
-import 'animate.css'; // Import animate.css for animations
+import 'animate.css';
 
 export default {
   name: 'LoginPage',
   setup() {
-    const store = useStore();
-    const router = useRouter();
     const email = ref('');
     const password = ref('');
-
-    const performLogin = async () => {
-      try {
-        const success = await store.dispatch('login', { email: email.value, password: password.value });
-        if (success) {
-          const currentUser = store.getters.currentUser;
+    const router = useRouter();
+    const bookService = interpret(bookMachine)
+      .onTransition((state) => {
+        if (state.matches('authenticated')) {
           Swal.fire('Success', 'Login successful', 'success');
-          if (currentUser.isAdmin) {
+          const currentUser = state.context.user;
+          if (currentUser && currentUser.isAdmin) {
             router.push('/admin');
           } else {
-            router.push('/userdashboard'); // Redirect to UserDashboard
+            router.push('/userdashboard');
           }
-        } else {
-          Swal.fire('Error', 'Invalid credentials or an error occurred.', 'error');
+        } else if (state.matches('error')) {
+          Swal.fire('Error', state.context.error || 'Login failed', 'error');
         }
-      } catch (error) {
-        console.error('Login error:', error);
-        Swal.fire('Error', 'An error occurred. Please try again.', 'error');
-      }
+      })
+      .start();
+
+    const performLogin = () => {
+      bookService.send({ type: 'LOGIN', data: { email: email.value, password: password.value } });
     };
 
     return {
@@ -80,11 +79,11 @@ export default {
 }
 
 .bg-custom {
-  background-color: #F2F1EB;
+  background-color: #f2f1eb;
 }
 
 .bg-signup-button {
-  background-color: #1A5319;
+  background-color: #1a5319;
 }
 
 .bg-signup-button-hover {
@@ -92,7 +91,7 @@ export default {
 }
 
 .text-login-link {
-  color: #1A5319;
+  color: #1a5319;
 }
 
 .tagline {

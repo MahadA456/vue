@@ -55,13 +55,17 @@
 
 <script>
 import { ref } from 'vue';
-import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
+import { interpret } from 'xstate';
+import { bookMachine } from '../state/bookMachine';
 
 export default {
   name: 'UserDashboard',
   setup() {
-    const store = useStore();
+    const router = useRouter();
+    const bookService = interpret(bookMachine).start();
+
     const searchQuery = ref('');
     const filteredBooks = ref([]);
     const genres = ref([]);
@@ -70,12 +74,16 @@ export default {
     const currentImage = ref('');
     const isDarkMode = ref(false);
 
-    store.dispatch('fetchBooks').then(() => {
-      books.value = store.state.books;
-      genres.value = [...new Set(store.state.books.map((book) => book.genre))];
-      filteredBooks.value = books.value;
-    }).catch((error) => {
-      Swal.fire('Error', error.message, 'error');
+    bookService.send({ type: 'FETCH_BOOKS' });
+    bookService.onTransition((state) => {
+      console.log(state)
+      if (state.matches('authenticated')) {
+        books.value = state.context.books;
+        genres.value = [...new Set(state.context.books.map((book) => book.genre))];
+        filteredBooks.value = books.value;
+      } else if (state.matches('error')) {
+        Swal.fire('Error', state.context.error, 'error');
+      }
     });
 
     const filterByGenre = (genre) => {
@@ -86,7 +94,7 @@ export default {
     };
 
     const searchByAuthor = () => {
-      filteredBooks.value = books.value.filter(book => book.author.toLowerCase().includes(searchQuery.value.toLowerCase()));
+      filteredBooks.value = books.value.filter(book => book?.author?.toLowerCase().includes(searchQuery?.value?.toLowerCase()));
       if (filteredBooks.value.length === 0 && searchQuery.value.trim() !== '') {
         Swal.fire('No Books Found', 'Sorry, no books were found for the entered author.', 'info');
       }
@@ -107,9 +115,8 @@ export default {
     };
 
     const logout = () => {
-      store.dispatch('logout').then(() => {
-        location.reload(); // Reload to clear state and redirect to login
-      });
+      bookService.send('LOGOUT');
+      router.push('/login'); // Redirect to login page
     };
 
     return {

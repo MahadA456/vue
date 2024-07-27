@@ -33,16 +33,16 @@
 
 <script>
 import { ref } from 'vue';
-import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
+import { interpret } from 'xstate';
+import { bookMachine } from '../state/bookMachine';
 import '../assets/tailwind.css';
 import 'animate.css'; // Import animate.css for animations
 
 export default {
   name: 'SignupPage',
   setup() {
-    const store = useStore();
     const router = useRouter();
     const username = ref('');
     const email = ref('');
@@ -50,28 +50,26 @@ export default {
     const confirmPassword = ref('');
     const errorMsg = ref('');
     const errorShow = ref(false);
+    const bookService = interpret(bookMachine).start();
 
-    const performSignup = async () => {
+    const performSignup = () => {
       if (password.value !== confirmPassword.value) {
         errorMsg.value = 'Passwords do not match';
         errorShow.value = true;
         return;
       }
 
-      try {
-        const success = await store.dispatch('registerUser', { email: email.value, password: password.value, confirmPassword: confirmPassword.value });
-        if (success) {
+      bookService.send({ type: 'REGISTER', data: { email: email.value, password: password.value } });
+      bookService.onTransition((state) => {
+        if (state.matches('authenticated')) {
           Swal.fire('Success', 'Signup successful. Please login.', 'success');
           router.push('/login');
-        } else {
-          errorMsg.value = 'Signup failed. Please try again.';
+        } else if (state.matches('error')) {
+          errorMsg.value = state.context.error;
           errorShow.value = true;
+          Swal.fire('Error', state.context.error, 'error');
         }
-      } catch (error) {
-        console.error('Signup error:', error);
-        errorMsg.value = 'An error occurred. Please try again.';
-        errorShow.value = true;
-      }
+      });
     };
 
     return {

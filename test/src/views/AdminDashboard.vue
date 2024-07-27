@@ -142,17 +142,20 @@
 
 <script>
 import { ref } from 'vue';
-import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
-import 'animate.css';
+import { interpret } from 'xstate';
+import { bookMachine } from '../state/bookMachine';
+import 'animate.css'; // Import animate.css for animations
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'; // Import Firebase storage functions
 
 export default {
   name: 'AdminDashboard',
   setup() {
-    const store = useStore();
+    const router = useRouter();
     const storage = getStorage(); // Initialize Firebase storage
 
+    const bookService = interpret(bookMachine).start();
     const sidebarOpen = ref(true); // Sidebar state
     const isDarkMode = ref(false); // Dark mode state
 
@@ -179,10 +182,14 @@ export default {
     const years = Array.from({ length: 2024 - 1900 + 1 }, (_, i) => 1900 + i); // Array of years from 1900 to 2024
     const genres = ['Fiction', 'Non-fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Biography']; // Example genres
 
-    store.dispatch('fetchBooks').then(() => {
-      books.value = store.state.books;
-    }).catch((error) => {
-      Swal.fire('Error', error.message, 'error');
+    bookService.send({ type: 'FETCH_BOOKS' });
+
+    bookService.onTransition((state) => {
+      if (state.matches('authenticated')) {
+        books.value = state.context.books;
+      } else if (state.matches('error')) {
+        Swal.fire('Error', state.context.error, 'error');
+      }
     });
 
     const createBook = async () => {
@@ -195,7 +202,7 @@ export default {
 
           // Add book with image URL to the store
           const bookData = { ...newBook.value, imgURL: imageUrl };
-          await store.dispatch('createBook', bookData);
+          bookService.send({ type: 'CREATE_BOOK', data: bookData });
 
           Swal.fire('Success', 'Book added successfully', 'success');
           newBook.value = { title: '', author: '', year: '', genre: '', imgFile: null };
@@ -211,18 +218,19 @@ export default {
 
     const editBook = (book) => {
       editBookData.value = { ...book };
+      showAddBookModal.value = false;
     };
 
     const updateBook = async () => {
       if (editBookData.value.title && editBookData.value.author && editBookData.value.year && editBookData.value.genre) {
-        await store.dispatch('updateBook', editBookData.value);
+        bookService.send({ type: 'UPDATE_BOOK', data: editBookData.value });
         editBookData.value = { id: '', title: '', author: '', year: '', genre: '' };
         Swal.fire('Success', 'Book updated successfully', 'success');
       }
     };
 
     const deleteBook = async (bookId) => {
-      await store.dispatch('deleteBook', bookId);
+      bookService.send({ type: 'DELETE_BOOK', data: bookId });
       Swal.fire('Deleted', 'Book deleted successfully', 'success');
     };
 
@@ -241,9 +249,8 @@ export default {
     };
 
     const logout = () => {
-      store.dispatch('logout').then(() => {
-        location.reload(); // Reload to clear state and redirect to login
-      });
+      bookService.send('LOGOUT');
+      router.push('/login'); // Redirect to login page
     };
 
     return {
