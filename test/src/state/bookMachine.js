@@ -15,7 +15,11 @@ export const bookMachine = Machine({
       on: {
         LOGIN: 'authenticating',
         REGISTER: 'registering',
-        FETCH_BOOKS: 'fetchingBooks'
+        FETCH_BOOKS: 'fetchingBooks',
+        CREATE_BOOK: 'creatingBook',
+        UPDATE_BOOK: 'updatingBook',
+        DELETE_BOOK: 'deletingBook',
+        LOGOUT: 'loggingOut'
       },
     },
     authenticating: {

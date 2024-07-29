@@ -27,8 +27,15 @@ export const createBook = async (book) => {
 
 // Update an existing book in Firestore
 export const updateBook = async (book) => {
+  console.log(book)
+    const bookdata={author:book.author,
+      genre:book.genre,
+      title:book.title,
+      imgURL:book.imgURL,
+      year:book.year
+    };
   const bookRef = doc(db, 'books', book.id);
-  await updateDoc(bookRef, book);
+  await updateDoc(bookRef, bookdata);
   return book;
 };
 
