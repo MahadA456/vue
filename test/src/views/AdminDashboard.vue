@@ -201,7 +201,7 @@ export default {
           const imageUrl = await getDownloadURL(imageRef);
 
           // Add book with image URL to the store
-          const bookData = { ...newBook.value, imgURL: imageUrl };
+          const bookData = { ...newBook.value, imgURL: imageUrl, imgFile: undefined }; // Do not include imgFile in Firestore
           bookService.send({ type: 'CREATE_BOOK', data: bookData });
 
           Swal.fire('Success', 'Book added successfully', 'success');

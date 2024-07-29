@@ -23,10 +23,8 @@ export const bookMachine = Machine({
         id: 'login',
         src: (context, event) => login(event.data),
         onDone: {
-          target: 'authenticated',
-          actions: [
-            () => {console.log('login from machine')},
-            assign({ user: (context, event) => event.data })],
+          target: 'fetchingBooks',
+          actions: assign({ user: (context, event) => event.data }),
         },
         onError: {
           target: 'error',
@@ -39,8 +37,22 @@ export const bookMachine = Machine({
         id: 'registerUser',
         src: (context, event) => registerUser(event.data),
         onDone: {
-          target: 'authenticated',
+          target: 'fetchingBooks',
           actions: assign({ user: (context, event) => event.data }),
+        },
+        onError: {
+          target: 'error',
+          actions: assign({ error: (context, event) => event.data.message }),
+        },
+      },
+    },
+    fetchingBooks: {
+      invoke: {
+        id: 'fetchBooks',
+        src: fetchBooks,
+        onDone: {
+          target: 'authenticated',
+          actions: assign({ books: (context, event) => event.data }),
         },
         onError: {
           target: 'error',
@@ -50,29 +62,10 @@ export const bookMachine = Machine({
     },
     authenticated: {
       on: {
-        FETCH_BOOKS: 'fetchingBooks',
         CREATE_BOOK: 'creatingBook',
         UPDATE_BOOK: 'updatingBook',
         DELETE_BOOK: 'deletingBook',
         LOGOUT: 'loggingOut',
-      },
-    },
-    fetchingBooks: {
-      invoke: {
-        id: 'fetchBooks',
-        src: fetchBooks,
-        onDone: {
-          target: 'authenticated',
-          actions: [
-            () => {console.log('fetchin books')}, 
-            assign({ books: (context, event) => event.data })],
-        },
-        onError: {
-          target: 'error',
-          actions: [
-            () => {console.log('error fetchin books')},
-            assign({ error: (context, event) => event.data.message })],
-        },
       },
     },
     creatingBook: {

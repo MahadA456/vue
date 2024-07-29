@@ -12,7 +12,16 @@ export const fetchBooks = async () => {
 
 // Create a new book in Firestore
 export const createBook = async (book) => {
-  const docRef = await addDoc(collection(db, 'books'), book);
+  
+    console.log(book)
+    const bookdata={author:book.author,
+      genre:book.genre,
+      title:book.title,
+      imgURL:book.imgURL,
+      year:book.year
+    
+    };
+  const docRef = await addDoc(collection(db, 'books'), bookdata);
   return { id: docRef.id, ...book };
 };
 
