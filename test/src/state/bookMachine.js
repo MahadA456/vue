@@ -8,14 +8,15 @@ export const bookMachine = Machine({
     user: null,
     books: [],
     genres: ['Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Thriller', 'Biography', 'Other'],
-    error: null
+    error: null,
   },
   states: {
     idle: {
       on: {
         LOGIN: 'authenticating',
-        REGISTER: 'registering'
-      }
+        REGISTER: 'registering',
+        FETCH_BOOKS: 'fetchingBooks'
+      },
     },
     authenticating: {
       invoke: {
@@ -23,17 +24,15 @@ export const bookMachine = Machine({
         src: (context, event) => login(event.data),
         onDone: {
           target: 'authenticated',
-          actions: assign({
-            user: (context, event) => event.data
-          })
+          actions: [
+            () => {console.log('login from machine')},
+            assign({ user: (context, event) => event.data })],
         },
         onError: {
           target: 'error',
-          actions: assign({
-            error: (context, event) => event.data.message
-          })
-        }
-      }
+          actions: assign({ error: (context, event) => event.data.message }),
+        },
+      },
     },
     registering: {
       invoke: {
@@ -41,17 +40,13 @@ export const bookMachine = Machine({
         src: (context, event) => registerUser(event.data),
         onDone: {
           target: 'authenticated',
-          actions: assign({
-            user: (context, event) => event.data
-          })
+          actions: assign({ user: (context, event) => event.data }),
         },
         onError: {
           target: 'error',
-          actions: assign({
-            error: (context, event) => event.data.message
-          })
-        }
-      }
+          actions: assign({ error: (context, event) => event.data.message }),
+        },
+      },
     },
     authenticated: {
       on: {
@@ -59,8 +54,8 @@ export const bookMachine = Machine({
         CREATE_BOOK: 'creatingBook',
         UPDATE_BOOK: 'updatingBook',
         DELETE_BOOK: 'deletingBook',
-        LOGOUT: 'loggingOut'
-      }
+        LOGOUT: 'loggingOut',
+      },
     },
     fetchingBooks: {
       invoke: {
@@ -68,17 +63,17 @@ export const bookMachine = Machine({
         src: fetchBooks,
         onDone: {
           target: 'authenticated',
-          actions: assign({
-            books: (context, event) => event.data
-          })
+          actions: [
+            () => {console.log('fetchin books')}, 
+            assign({ books: (context, event) => event.data })],
         },
         onError: {
           target: 'error',
-          actions: assign({
-            error: (context, event) => event.data.message
-          })
-        }
-      }
+          actions: [
+            () => {console.log('error fetchin books')},
+            assign({ error: (context, event) => event.data.message })],
+        },
+      },
     },
     creatingBook: {
       invoke: {
@@ -86,17 +81,13 @@ export const bookMachine = Machine({
         src: (context, event) => createBook(event.data),
         onDone: {
           target: 'authenticated',
-          actions: assign({
-            books: (context, event) => [...context.books, event.data]
-          })
+          actions: assign({ books: (context, event) => [...context.books, event.data] }),
         },
         onError: {
           target: 'error',
-          actions: assign({
-            error: (context, event) => event.data.message
-          })
-        }
-      }
+          actions: assign({ error: (context, event) => event.data.message }),
+        },
+      },
     },
     updatingBook: {
       invoke: {
@@ -104,17 +95,13 @@ export const bookMachine = Machine({
         src: (context, event) => updateBook(event.data),
         onDone: {
           target: 'authenticated',
-          actions: assign({
-            books: (context, event) => context.books.map(book => book.id === event.data.id ? event.data : book)
-          })
+          actions: assign({ books: (context, event) => context.books.map(book => book.id === event.data.id ? event.data : book) }),
         },
         onError: {
           target: 'error',
-          actions: assign({
-            error: (context, event) => event.data.message
-          })
-        }
-      }
+          actions: assign({ error: (context, event) => event.data.message }),
+        },
+      },
     },
     deletingBook: {
       invoke: {
@@ -122,17 +109,13 @@ export const bookMachine = Machine({
         src: (context, event) => deleteBook(event.data),
         onDone: {
           target: 'authenticated',
-          actions: assign({
-            books: (context, event) => context.books.filter(book => book.id !== event.data)
-          })
+          actions: assign({ books: (context, event) => context.books.filter(book => book.id !== event.data) }),
         },
         onError: {
           target: 'error',
-          actions: assign({
-            error: (context, event) => event.data.message
-          })
-        }
-      }
+          actions: assign({ error: (context, event) => event.data.message }),
+        },
+      },
     },
     loggingOut: {
       invoke: {
@@ -140,22 +123,18 @@ export const bookMachine = Machine({
         src: logout,
         onDone: {
           target: 'idle',
-          actions: assign({
-            user: null
-          })
+          actions: assign({ user: null }),
         },
         onError: {
           target: 'error',
-          actions: assign({
-            error: (context, event) => event.data.message
-          })
-        }
-      }
+          actions: assign({ error: (context, event) => event.data.message }),
+        },
+      },
     },
     error: {
       on: {
-        RETRY: 'idle'
-      }
-    }
-  }
+        RETRY: 'idle',
+      },
+    },
+  },
 });

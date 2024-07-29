@@ -50,8 +50,8 @@ export default {
           const currentUser = state.context.user;
           console.log('Routing to appropriate dashboard');
           console.log(currentUser)
-          if ( currentUser.isAdmin) {
-            console.log('redirected to admin')
+          if (currentUser.isAdmin) {
+            console.log('redirected to admin');
             router.push('/admin');
           } else {
             router.push('/userdashboard');

@@ -1,20 +1,17 @@
 import { createStore } from 'vuex';
-import bcrypt from 'bcryptjs'; // Import bcryptjs
-import persistState from './persist';
-import { auth } from '../main'; // Import the auth instance
+import bcrypt from 'bcryptjs'; // Import bcryptjs for hashing and comparing passwords
+import { auth, db } from '../main'; // Import Firebase auth and Firestore instances
 import { signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
-import { db } from '../main'; // Import the Firestore instance
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 
-const ADMIN_EMAIL = 'admin@example.com'; // Admin email
-const ADMIN_PASSWORD_HASH = bcrypt.hashSync('admin123', 10); // Hashed admin password
+const ADMIN_EMAIL = 'admin@example.com';
+const ADMIN_PASSWORD_HASH = bcrypt.hashSync('admin123', 10); // Example hashed password for admin
 
 export default createStore({
-  plugins: [persistState(500)], // Applying the persistState plugin with 500ms debounce
   state: {
     user: null,
     books: [],
-    genres: ['Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Thriller', 'Biography', 'Other']
+    genres: ['Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Thriller', 'Biography', 'Other'],
   },
   mutations: {
     setUser(state, user) {
@@ -52,12 +49,7 @@ export default createStore({
         }
       }
     },
-    async registerUser({ commit }, { email, password, confirmPassword }) {
-      if (password !== confirmPassword) {
-        console.error('Signup error: Passwords do not match');
-        return false; // Passwords do not match
-      }
-
+    async registerUser({ commit }, { email, password }) {
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         commit('setUser', { email: userCredential.user.email, uid: userCredential.user.uid });
@@ -94,16 +86,8 @@ export default createStore({
       }
     },
     async createBook({ commit }, book) {
-      console.log(book)
-      const bookdata={author:book.author,
-        genre:book.genre,
-        title:book.title,
-        imgURL:book.imgURL,
-        year:book.year
-      
-      };
       try {
-        const docRef = await addDoc(collection(db, 'books'), bookdata);
+        const docRef = await addDoc(collection(db, 'books'), book);
         const newBook = { id: docRef.id, ...book };
         commit('addBook', newBook);
       } catch (error) {

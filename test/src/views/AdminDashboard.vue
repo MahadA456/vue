@@ -146,8 +146,7 @@ import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
 import { interpret } from 'xstate';
 import { bookMachine } from '../state/bookMachine';
-import 'animate.css'; // Import animate.css for animations
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'; // Import Firebase storage functions
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default {
   name: 'AdminDashboard',
@@ -182,6 +181,7 @@ export default {
     const years = Array.from({ length: 2024 - 1900 + 1 }, (_, i) => 1900 + i); // Array of years from 1900 to 2024
     const genres = ['Fiction', 'Non-fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Biography']; // Example genres
 
+    // Fetch books on startup
     bookService.send({ type: 'FETCH_BOOKS' });
 
     bookService.onTransition((state) => {
@@ -254,8 +254,8 @@ export default {
     };
 
     return {
-      sidebarOpen, // Return sidebar state
-      isDarkMode, // Return dark mode state
+      sidebarOpen,
+      isDarkMode,
       newBook,
       editBookData,
       showAddBookModal,
@@ -270,7 +270,7 @@ export default {
       closeImageModal,
       showImageModalFlag,
       currentImage,
-      toggleDarkMode, // Return toggle dark mode function
+      toggleDarkMode,
       logout
     };
   },

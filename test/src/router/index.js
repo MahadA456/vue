@@ -49,21 +49,21 @@ const router = createRouter({
 });
 
 // Navigation guards to check authentication
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = store.getters.isAuthenticated;
-  const currentUser = store.getters.currentUser;
+// router.beforeEach((to, from, next) => {
+//   const isAuthenticated = store.getters.isAuthenticated;
+//   const currentUser = store.getters.currentUser;
 
-  if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
-    next('/login');
-  } else if (to.matched.some(record => record.meta.requiresUnauth) && isAuthenticated) {
-    if (currentUser.isAdmin) {
-      next('/admin');
-    } else {
-      next('/userdashboard');  // Redirect to UserDashboard if logged in as user
-    }
-  } else {
-    next();
-  }
-});
+//   if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
+//     next('/login');
+//   } else if (to.matched.some(record => record.meta.requiresUnauth) && isAuthenticated) {
+//     if (currentUser.isAdmin) {
+//       next('/admin');
+//     } else {
+//       next('/userdashboard');  // Redirect to UserDashboard if logged in as user
+//     }
+//   } else {
+//     next();
+//   }
+// });
 
 export default router;

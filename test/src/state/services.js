@@ -1,27 +1,18 @@
-import { auth, db } from '../main'; // Ensure correct path to firebase configuration
+import { auth, db } from '../main';
 import { signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import bcrypt from 'bcryptjs';
 
-// Admin credentials (hashed)
-const ADMIN_EMAIL = 'admin@example.com';
-const ADMIN_PASSWORD_HASH = bcrypt.hashSync('admin123', 10);
-
 // Fetch all books from Firestore
 export const fetchBooks = async () => {
+  console.log('fetching books service')
   const querySnapshot = await getDocs(collection(db, 'books'));
   return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
 // Create a new book in Firestore
 export const createBook = async (book) => {
-  const docRef = await addDoc(collection(db, 'books'), {
-    author: book.author,
-    genre: book.genre,
-    title: book.title,
-    imgURL: book.imgURL,
-    year: book.year
-  });
+  const docRef = await addDoc(collection(db, 'books'), book);
   return { id: docRef.id, ...book };
 };
 
@@ -58,3 +49,5 @@ export const registerUser = async ({ email, password }) => {
 export const logout = async () => {
   await signOut(auth);
 };
+const ADMIN_EMAIL = 'admin@example.com';
+const ADMIN_PASSWORD_HASH = bcrypt.hashSync('admin123', 10); // Example password hash
