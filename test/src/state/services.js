@@ -18,7 +18,8 @@ export const createBook = async (book) => {
       genre:book.genre,
       title:book.title,
       imgURL:book.imgURL,
-      year:book.year
+      year:book.year,
+      bookURL: book.bookURL
     
     };
   const docRef = await addDoc(collection(db, 'books'), bookdata);
@@ -32,7 +33,8 @@ export const updateBook = async (book) => {
       genre:book.genre,
       title:book.title,
       imgURL:book.imgURL,
-      year:book.year
+      year:book.year,
+      bookURL: book.bookURL
     };
   const bookRef = doc(db, 'books', book.id);
   await updateDoc(bookRef, bookdata);

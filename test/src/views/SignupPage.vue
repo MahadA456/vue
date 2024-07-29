@@ -12,11 +12,13 @@
           </div>
           <div class="mb-4">
             <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
-            <input type="password" id="password" v-model="password" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
+            <input type="password" id="password" v-model="password" @keyup="checkCapsLock" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
+            <p v-if="isCapsLockOn" class="text-red-500 text-sm mt-2">Caps Lock is on</p>
           </div>
           <div class="mb-4">
             <label for="confirmPassword" class="block text-gray-700 font-medium mb-2">Confirm Password</label>
-            <input type="password" id="confirmPassword" v-model="confirmPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
+            <input type="password" id="confirmPassword" v-model="confirmPassword" @keyup="checkCapsLock" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
+            <p v-if="isCapsLockOn" class="text-red-500 text-sm mt-2">Caps Lock is on</p>
           </div>
           <div v-if="errorShow" class="error">{{ errorMsg }}</div>
           <button type="submit" class="w-full bg-signup-button text-white py-2 rounded-lg hover:bg-signup-button-hover transition duration-200 transform hover:scale-105">Sign Up</button>
@@ -40,6 +42,7 @@ export default {
     const email = ref('');
     const password = ref('');
     const confirmPassword = ref('');
+    const isCapsLockOn = ref(false);
     const errorMsg = ref('');
     const errorShow = ref(false);
 
@@ -61,13 +64,19 @@ export default {
       }
     };
 
+    const checkCapsLock = (event) => {
+      isCapsLockOn.value = event.getModifierState('CapsLock');
+    };
+
     return {
       email,
       password,
       confirmPassword,
+      isCapsLockOn,
       errorMsg,
       errorShow,
       performSignup,
+      checkCapsLock,
     };
   },
 };

@@ -13,7 +13,8 @@
           </div>
           <div class="mb-4">
             <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
-            <input type="password" id="password" v-model="password" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
+            <input type="password" id="password" v-model="password" @keyup="checkCapsLock" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
+            <p v-if="isCapsLockOn" class="text-red-500 text-sm mt-2">Caps Lock is on</p>
           </div>
           <div class="flex items-center justify-between">
             <a href="#" class="text-sm text-gray-500 hover:underline">Forgot Password?</a>
@@ -40,6 +41,7 @@ export default {
   setup() {
     const email = ref('');
     const password = ref('');
+    const isCapsLockOn = ref(false);
     const router = useRouter();
     const bookService = interpret(bookMachine)
       .onTransition((state) => {
@@ -49,9 +51,7 @@ export default {
           Swal.fire('Success', 'Login successful', 'success');
           const currentUser = state.context.user;
           console.log('Routing to appropriate dashboard');
-          console.log(currentUser)
           if (currentUser.isAdmin) {
-            console.log('redirected to admin');
             router.push('/admin');
           } else {
             router.push('/userdashboard');
@@ -63,14 +63,19 @@ export default {
       .start();
 
     const performLogin = () => {
-      console.log('Attempting login');
       bookService.send({ type: 'LOGIN', data: { email: email.value, password: password.value } });
+    };
+
+    const checkCapsLock = (event) => {
+      isCapsLockOn.value = event.getModifierState('CapsLock');
     };
 
     return {
       email,
       password,
+      isCapsLockOn,
       performLogin,
+      checkCapsLock
     };
   },
 };

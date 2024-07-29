@@ -44,6 +44,7 @@
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Genre</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book URL</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -57,6 +58,9 @@
               <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">{{ book.year }}</td>
               <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">{{ book.author }}</td>
               <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">{{ book.genre }}</td>
+              <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">
+                <a :href="book.bookURL" target="_blank" class="text-blue-500 hover:underline">{{ book.bookURL }}</a>
+              </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <button @click="editBook(book)" class="btn btn-blue">Edit</button>
                 <button @click="deleteBook(book.id)" class="btn btn-red ml-2">Delete</button>
@@ -92,6 +96,10 @@
                 <option v-for="genre in genres" :key="genre" :value="genre">{{ genre }}</option>
               </select>
             </div>
+            <div class="mb-4">
+              <label for="bookURL" class="block text-sm font-medium text-gray-700">Book URL</label>
+              <input type="url" id="bookURL" v-model="newBook.bookURL" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
             <button type="submit" class="btn btn-blue">Add Book</button>
           </form>
           <button @click="showAddBookModal = false" class="btn btn-red mt-4">Close</button>
@@ -122,6 +130,10 @@
               <select id="editGenre" v-model="editBookData.genre" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 <option v-for="genre in genres" :key="genre" :value="genre">{{ genre }}</option>
               </select>
+            </div>
+            <div class="mb-4">
+              <label for="editBookURL" class="block text-sm font-medium text-gray-700">Book URL</label>
+              <input type="url" id="editBookURL" v-model="editBookData.bookURL" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
             <button type="submit" class="btn btn-blue">Update Book</button>
           </form>
@@ -163,6 +175,7 @@ export default {
       author: '',
       year: '',
       genre: '',
+      bookURL: '', // Add bookURL to newBook object
       imgFile: null // Add imgFile to store the file object
     });
     const editBookData = ref({
@@ -170,7 +183,8 @@ export default {
       title: '',
       author: '',
       year: '',
-      genre: ''
+      genre: '',
+      bookURL: '' // Add bookURL to editBookData object
     });
     const showAddBookModal = ref(false);
     const showImageModalFlag = ref(false);
@@ -193,7 +207,7 @@ export default {
     });
 
     const createBook = async () => {
-      if (newBook.value.title && newBook.value.author && newBook.value.year && newBook.value.genre && newBook.value.imgFile) {
+      if (newBook.value.title && newBook.value.author && newBook.value.year && newBook.value.genre && newBook.value.imgFile && newBook.value.bookURL) {
         try {
           // Upload image to Firebase Storage
           const imageRef = storageRef(storage, `images/${newBook.value.imgFile.name}`);
@@ -205,7 +219,7 @@ export default {
           bookService.send({ type: 'CREATE_BOOK', data: bookData });
 
           Swal.fire('Success', 'Book added successfully', 'success');
-          newBook.value = { title: '', author: '', year: '', genre: '', imgFile: null };
+          newBook.value = { title: '', author: '', year: '', genre: '', bookURL: '', imgFile: null };
           showAddBookModal.value = false;
         } catch (error) {
           Swal.fire('Error', 'Failed to add book', 'error');
@@ -222,10 +236,12 @@ export default {
     };
 
     const updateBook = async () => {
-      if (editBookData.value.title && editBookData.value.author && editBookData.value.year && editBookData.value.genre) {
+      if (editBookData.value.title && editBookData.value.author && editBookData.value.year && editBookData.value.genre && editBookData.value.bookURL) {
         bookService.send({ type: 'UPDATE_BOOK', data: editBookData.value });
-        editBookData.value = { id: '', title: '', author: '', year: '', genre: '' };
+        editBookData.value = { id: '', title: '', author: '', year: '', genre: '', bookURL: '' };
         Swal.fire('Success', 'Book updated successfully', 'success');
+      } else {
+        Swal.fire('Error', 'Please fill all fields', 'error');
       }
     };
 

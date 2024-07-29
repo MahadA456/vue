@@ -99,7 +99,8 @@ export default createStore({
         genre:book.genre,
         title:book.title,
         imgURL:book.imgURL,
-        year:book.year
+        year:book.year,
+        bookURL: book.bookURL
       
       };
       try {

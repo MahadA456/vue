@@ -38,6 +38,9 @@
             <p :class="['text-gray-600', { 'text-gray-400': isDarkMode }]">Author: {{ book.author }}</p>
             <p :class="['text-gray-600', { 'text-gray-400': isDarkMode }]">Year: {{ book.year }}</p>
             <p :class="['text-gray-600', { 'text-gray-400': isDarkMode }]">Genre: {{ book.genre }}</p>
+            <p v-if="book.bookURL" :class="['text-gray-600', { 'text-gray-400': isDarkMode }]">
+              <a :href="book.bookURL" target="_blank" class="underline text-blue-600 dark:text-blue-400">Read More</a>
+            </p>
           </div>
         </div>
       </div>
