@@ -3,9 +3,9 @@
     <!-- Sidebar -->
     <div :class="['w-64 shadow-lg p-6 sidebar-bg', { 'hidden': !sidebarOpen }]">
       <div class="flex items-center justify-center mb-6">
-        <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 rounded-full border-black border">
+        <img src="@/assets/newlogo.jpg" alt="Logo" class="w-24 h-24 rounded-full border-black border animate-fade-in">
       </div>
-      <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-4 animate-slide-in">
         <img src="@/assets/linkedinavatar.jpg" alt="User Avatar" class="w-12 h-12 rounded-full">
         <div>
           <h2 class="text-lg font-semibold text-white">Book Worm Administration</h2>
@@ -15,7 +15,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="flex-1 p-8 bg-main-content">
+    <div class="flex-1 p-8 bg-main-content animate-fade-in-up">
       <!-- Header -->
       <div class="flex justify-between items-center mb-6">
         <div>
@@ -29,12 +29,12 @@
       </div>
 
       <!-- Add Book Button -->
-      <div class="mb-6 flex justify-end">
+      <div class="mb-6 flex justify-end animate-slide-in-right">
         <button @click="showAddBookModal = true" class="btn transparent-btn">+ Add New Book</button>
       </div>
 
       <!-- Books Table -->
-      <div :class="['overflow-x-auto shadow-md rounded-lg', { 'dark-mode-table': isDarkMode }]">
+      <div :class="['overflow-x-auto shadow-md rounded-lg animate-zoom-in', { 'dark-mode-table': isDarkMode }]">
         <table class="min-w-full divide-y divide-gray-200">
           <thead :class="[{ 'bg-gray-50': !isDarkMode, 'bg-gray-700': isDarkMode }]">
             <tr>
@@ -49,7 +49,7 @@
             </tr>
           </thead>
           <tbody :class="[{ 'bg-white': !isDarkMode, 'bg-gray-800': isDarkMode, 'divide-y': true, 'divide-gray-200': true }]">
-            <tr v-for="(book, index) in books" :key="book.id">
+            <tr v-for="(book, index) in books" :key="book.id" class="animate-fade-in-up">
               <td class="px-6 py-4 whitespace-nowrap">{{ index + 1 }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <img :src="book.imgURL" alt="Book Image" class="h-16 w-16 object-cover cursor-pointer" @click="showImageModal(book.imgURL)" />
@@ -71,7 +71,7 @@
       </div>
 
       <!-- Add Book Modal -->
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-smoke-light" v-if="showAddBookModal">
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-smoke-light animate-fade-in" v-if="showAddBookModal">
         <div class="bg-white w-full max-w-md p-8 rounded-lg shadow-lg">
           <h3 class="text-xl font-bold mb-4 text-indigo-700">Add New Book</h3>
           <form @submit.prevent="createBook">
@@ -107,7 +107,7 @@
       </div>
 
       <!-- Edit Book Modal -->
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-smoke-light" v-if="editBookData.id">
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-smoke-light animate-fade-in" v-if="editBookData.id">
         <div class="bg-white w-full max-w-md p-8 rounded-lg shadow-lg">
           <h3 class="text-xl font-bold mb-4 text-indigo-700">Edit Book</h3>
           <form @submit.prevent="updateBook">
@@ -142,7 +142,7 @@
       </div>
 
       <!-- Image Modal -->
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-smoke-light" v-if="showImageModalFlag">
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-smoke-light animate-fade-in" v-if="showImageModalFlag">
         <div class="bg-white p-4 rounded-lg shadow-lg max-w-3xl w-full relative">
           <button @click="closeImageModal" class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full">&times;</button>
           <img :src="currentImage" alt="Book Image" class="w-full h-auto object-cover rounded-lg">
@@ -324,6 +324,11 @@ export default {
   border-radius: 0.375rem;
   text-align: center;
   width: auto;
+  transition: transform 0.2s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
 }
 
 .btn-blue {
@@ -450,5 +455,83 @@ export default {
   100% {
     background-position: 0% 50%;
   }
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Fade-in up animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-in-out;
+}
+
+/* Slide-in animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease-in-out;
+}
+
+/* Slide-in from right animation */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s ease-in-out;
+}
+
+/* Zoom-in animation */
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-zoom-in {
+  animation: zoomIn 0.5s ease-in-out;
 }
 </style>
