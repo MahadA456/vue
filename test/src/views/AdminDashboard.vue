@@ -12,6 +12,19 @@
           <p class="text-sm text-gray-200">Admin</p>
         </div>
       </div>
+      <div class="mt-6">
+        <button @click="toggleGenreButtons" class="btn btn-blue w-full">Genre</button>
+        <div v-if="showGenreButtons" class="mt-4">
+          <button
+            v-for="genre in genres"
+            :key="genre"
+            @click="filterByGenre(genre)"
+            class="btn btn-gray w-full mb-2"
+          >
+            {{ genre }}
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Main Content -->
@@ -34,7 +47,7 @@
       </div>
 
       <!-- Books Table -->
-      <div :class="['overflow-x-auto shadow-md rounded-lg animate-zoom-in', { 'dark-mode-table': isDarkMode }]">
+      <div class="table-container overflow-x-auto shadow-md rounded-lg animate-zoom-in" :class="{ 'dark-mode-table': isDarkMode }">
         <table class="min-w-full divide-y divide-gray-200">
           <thead :class="[{ 'bg-gray-50': !isDarkMode, 'bg-gray-700': isDarkMode }]">
             <tr>
@@ -49,19 +62,19 @@
             </tr>
           </thead>
           <tbody :class="[{ 'bg-white': !isDarkMode, 'bg-gray-800': isDarkMode, 'divide-y': true, 'divide-gray-200': true }]">
-            <tr v-for="(book, index) in books" :key="book.id" class="animate-fade-in-up">
+            <tr v-for="(book, index) in filteredBooks" :key="book.id" class="animate-fade-in-up">
               <td class="px-6 py-4 whitespace-nowrap">{{ index + 1 }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <img :src="book.imgURL" alt="Book Image" class="h-16 w-16 object-cover cursor-pointer" @click="showImageModal(book.imgURL)" />
               </td>
-              <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">{{ book.title }}</td>
+              <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">{{ truncateText(book.title, 20) }}</td>
               <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">{{ book.year }}</td>
               <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">{{ book.author }}</td>
               <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">{{ book.genre }}</td>
               <td :class="['px-6 py-4 whitespace-nowrap', { 'dark-mode-text': isDarkMode, 'text-black': !isDarkMode }]">
                 <a :href="book.bookURL" target="_blank" class="text-blue-500 hover:underline">{{ book.bookURL }}</a>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-6 py-4 whitespace-nowrap actions">
                 <button @click="editBook(book)" class="btn btn-blue">Edit</button>
                 <button @click="deleteBook(book.id)" class="btn btn-red ml-2">Delete</button>
               </td>
@@ -169,6 +182,7 @@ export default {
     const bookService = interpret(bookMachine).start();
     const sidebarOpen = ref(true); // Sidebar state
     const isDarkMode = ref(false); // Dark mode state
+    const showGenreButtons = ref(false); // Genre button state
 
     const newBook = ref({
       title: '',
@@ -191,6 +205,7 @@ export default {
     const currentImage = ref('');
 
     const books = ref([]);
+    const filteredBooks = ref([]);
 
     const years = Array.from({ length: 2024 - 1900 + 1 }, (_, i) => 1900 + i); // Array of years from 1900 to 2024
     const genres = ['Fiction', 'Non-fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Biography']; // Example genres
@@ -201,6 +216,7 @@ export default {
     bookService.onTransition((state) => {
       if (state.matches('authenticated')) {
         books.value = state.context.books;
+        filteredBooks.value = books.value; // Initialize filteredBooks with all books
       } else if (state.matches('error')) {
         Swal.fire('Error', state.context.error, 'error');
       }
@@ -264,9 +280,21 @@ export default {
       isDarkMode.value = !isDarkMode.value;
     };
 
+    const toggleGenreButtons = () => {
+      showGenreButtons.value = !showGenreButtons.value;
+    };
+
+    const filterByGenre = (genre) => {
+      filteredBooks.value = books.value.filter(book => book.genre === genre);
+    };
+
     const logout = () => {
       bookService.send('LOGOUT');
       router.push('/login'); // Redirect to login page
+    };
+
+    const truncateText = (text, maxLength) => {
+      return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
     };
 
     return {
@@ -287,7 +315,12 @@ export default {
       showImageModalFlag,
       currentImage,
       toggleDarkMode,
-      logout
+      logout,
+      truncateText,
+      showGenreButtons,
+      toggleGenreButtons,
+      filterByGenre,
+      filteredBooks
     };
   },
   methods: {
@@ -349,6 +382,15 @@ export default {
   background-color: #c9302c;
 }
 
+.btn-gray {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-gray:hover {
+  background-color: #5a6268;
+}
+
 .book-details-title {
   font-family: 'Dancing Script', cursive;
   font-size: 3rem;
@@ -378,6 +420,11 @@ export default {
 .transparent-btn:hover {
   background-color: #03c03c;
   color: white;
+}
+
+.table-container {
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 @media (max-width: 640px) {
